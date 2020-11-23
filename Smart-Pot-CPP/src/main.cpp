@@ -104,22 +104,21 @@ int ultraSensor()
   return distance;
 }
 
-
-  
-
-
-  
-
-
-
-double lichtSensoren()
+String parsingProcesstring(String x, int y)
 {
-  
+  x = x + y;
 
-  return 0;
+  return x;
 }
 
-int printOpdrachten(int distance, double dbltemperatuur, double dblluchtvochtigheid)
+int lichtSterktenaarProcenten(int x)
+{
+  (x * procentRekenwaarde) / sensorRekenwaarde;
+
+  return x;
+}
+
+int printOpdrachten(int distance, double dbltemperatuur, double dblluchtvochtigheid, int sensorValueGrond, int lichtSterkte1, int lichtSterkte2, int lichtSterkte3)
 {
   Serial.print("Distance: ");
   Serial.print(distance);
@@ -140,23 +139,25 @@ int printOpdrachten(int distance, double dbltemperatuur, double dblluchtvochtigh
   return 0;
 }
 
-int omrekenProcesnaarProcenten(int distance, int x, int y, int z)
+int omrekenProcesnaarProcenten(int distance, int x)
 {
-  sensorValueGrond = ((((sensorValueGrond  - sensorRekenwaarde) * procentHulpwaarde) * procentRekenwaarde) / sensorRekenwaarde);
-  distance = ((distance * procentRekenwaarde) / potDiepte) - procentRekenwaarde;
-  lichtSterkte1 = (lichtSterkte1 * procentRekenwaarde) / sensorRekenwaarde;
-  lichtSterkte2 = (lichtSterkte2 * procentRekenwaarde) / sensorRekenwaarde;
-  lichtSterkte3 = (lichtSterkte3 * procentRekenwaarde) / sensorRekenwaarde;
-
-  return 0;
-}
-
-int lichtSterktenaarProcenten(int x)
-{
-  (x * procentRekenwaarde) / sensorRekenwaarde;
+  int honderdWaarde = 100;
+  int lichtDeler = 4095;
+  
+  x = (x * honderdWaarde) / lichtDeler;
 
   return x;
 }
+
+int distanceNaarprocenten(int distance)
+{ 
+  int potDiepte = 30;
+  int honderdWaarde = 100;
+  int procentDistance = ((distance * honderdWaarde) / potDiepte) - honderdWaarde;
+
+  return procentDistance;
+}
+
 
 int parsingProcesnaarString(int distance, double dbltemperatuur, double dblluchtvochtigheid)
 {
@@ -165,15 +166,13 @@ int parsingProcesnaarString(int distance, double dbltemperatuur, double dbllucht
   strwaterniveau = strwaterniveau + distance;
   strgrondvochtigheid = sensorValueGrond + strgrondvochtigheid;
 
+  sensorValueGrond = ((((sensorValueGrond  - sensorRekenwaarde) * procentHulpwaarde) * procentRekenwaarde) / sensorRekenwaarde);
+  distance = ((distance * procentRekenwaarde) / potDiepte) - procentRekenwaarde;
+
   return 0;
 }
 
-String parsingProcesstring(String x, int y)
-{
-  x = x + y;
 
-  return x;
-}
 
 int grenswaardeGrondvochtigheid()
 {
@@ -242,18 +241,21 @@ void loop()
       int lichtSterkte1 = analogRead(lichtPin1);
       int lichtSterkte2 = analogRead(lichtPin2);
       int lichtSterkte3 = analogRead(lichtPin3);
+      int procentDistance = distanceNaarprocenten(distance);
       int procentlichtSterkte1 = lichtSterktenaarProcenten(lichtSterkte1);
       int procentlichtSterkte2 = lichtSterktenaarProcenten(lichtSterkte2);
       int procentlichtSterkte3 = lichtSterktenaarProcenten(lichtSterkte3);
+      int procentDistance = 
 
     
       // Print alle waardes uit (voor debugging)
-      printOpdrachten(distance, dbltemperatuur, dblluchtvochtigheid);
+      printOpdrachten(distance, dbltemperatuur, dblluchtvochtigheid, procentlichtSterkte1, procentlichtSterkte2, procentlichtSterkte3);
 
       
 
       // Procentuele omrekening van alle getallen
-      omrekenProcesnaarProcenten(distance);
+      omrekenProcesnaarProcenten(lichtSterkte1);
+      omrekenProcesnaarProcenten(lichtSterkte2);
 
       
       // Omzetten van alle getallen naar strings, zo kunnen ze worden meegegeven in de JSON string
@@ -261,6 +263,9 @@ void loop()
       String strlichtSterkte1 = parsingProcesstring(strlichtsterkte1, procentlichtSterkte1);
       String strlichtSterkte2 = parsingProcesstring(strlichtsterkte2, procentlichtSterkte2);
       String strlichtSterkte3 = parsingProcesstring(strlichtsterkte3, procentlichtSterkte3);
+      String strtemperatuur = parsingProcesstring(strtemperatuur, dbltemperatuur);
+      String strluchtvochtigheid = parsingProcesstring(strluchtvochtigheid, dblluchtvochtigheid);
+      String strwaterniveau = parsingProcesstring(strwaterniveau, procentDistance)
       // Grenswaarde van de servo
       grenswaardeGrondvochtigheid();
       
