@@ -6,7 +6,7 @@
 #include <DHT.h>
 #include <ESP32Servo.h>
 
-// Definen van alle datapins van alle componenten
+// Definitions
 #define DHTTYPE DHT11
 
 // Const int's van pins
@@ -45,7 +45,7 @@ double lichtSterkte1;
 double lichtSterkte2;
 double lichtSterkte3;
 
-int distance;
+
 int sensorValueGrond; 
 int postCounter;
 
@@ -101,7 +101,7 @@ int ultraSensor()
   digitalWrite(trigPin, LOW);
   duration = pulseIn(echoPin, HIGH);
   // Natuurkundige berekening voor de hoeveelheid water in het reservoir
-  distance = duration * 0.034 / 2;
+  int distance = duration * 0.034 / 2;
 
   return distance;
 }
@@ -130,7 +130,7 @@ double lichtSensoren()
   return 0;
 }
 
-int printOpdrachten()
+int printOpdrachten(int distance)
 {
   Serial.print("Distance: ");
   Serial.print(distance);
@@ -151,7 +151,7 @@ int printOpdrachten()
   return 0;
 }
 
-int omrekenProcesnaarProcenten()
+int omrekenProcesnaarProcenten(int distance)
 {
   sensorValueGrond = ((((sensorValueGrond  - sensorRekenwaarde) * procentHulpwaarde) * procentRekenwaarde) / sensorRekenwaarde);
   distance = ((distance * procentRekenwaarde) / potDiepte) - procentRekenwaarde;
@@ -162,7 +162,7 @@ int omrekenProcesnaarProcenten()
   return 0;
 }
 
-int parsingProcesnaarString()
+int parsingProcesnaarString(int distance)
 {
   strtemperatuur = strtemperatuur + dbltemperatuur;
   strluchtvochtigheid = strluchtvochtigheid + dblluchtvochtigheid;
@@ -220,18 +220,9 @@ void setup()
 
 void loop()
 {
-  // Ultrasonic sensor
-  digitalWrite(trigPin, LOW);
-  delayMicroseconds(2);
-  digitalWrite(trigPin, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(trigPin, LOW);
-  duration = pulseIn(echoPin, HIGH);
-  // Natuurkundige berekening voor de hoeveelheid water in het reservoir
-  distance = duration * 0.034 / 2;
-
+  int distance = ultraSensor();
   potLed(distance);
-  
+
   if ((millis() - lastTime) > timerDelay) 
   {
    
@@ -250,16 +241,16 @@ void loop()
       lichtSensoren();
     
       // Print alle waardes uit (voor debugging)
-      printOpdrachten();
+      printOpdrachten(distance);
 
       
 
       // Procentuele omrekening van alle getallen
-      omrekenProcesnaarProcenten();
+      omrekenProcesnaarProcenten(distance);
 
       
       // Omzetten van alle getallen naar strings, zo kunnen ze worden meegegeven in de JSON string
-      parsingProcesnaarString();
+      parsingProcesnaarString(distance);
 
       // Grenswaarde van de servo
       grenswaardeGrondvochtigheid();
