@@ -7,17 +7,19 @@
 #include <ESP32Servo.h>
 
 // Definen van alle datapins van alle componenten
-#define DHTPIN 14
 #define DHTTYPE DHT11
-#define servopin 15
-#define echoPin 26
-#define grondPin 33
-#define trigPin 27
-#define lichtPin1 32
-#define lichtPin2 35 
-#define lichtPin3 34
-#define greenpin 2
-#define redpin 4
+
+// Const int's van pins
+const int DHTPIN = 14;
+const int servopin = 15;
+const int echoPin = 26;
+const int grondPin = 33;
+const int lichtPin1 = 32;
+const int lichtPin2 = 35;
+const int lichtPin3 = 34;
+const int greenpin = 2;
+const int redpin = 4;
+const int trigPin = 27;
 
 // magic number handlers
 const int procentHulpwaarde = -1;
