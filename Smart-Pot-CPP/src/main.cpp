@@ -39,8 +39,6 @@ String strlichtsterkte2;
 String strlichtsterkte3;
 String strwaterniveau;
 
-double dblluchtvochtigheid = nulWaarde;
-double dbltemperatuur = nulWaarde;
 double lichtSterkte1;
 double lichtSterkte2;
 double lichtSterkte3;
@@ -88,7 +86,7 @@ int potLed(int distance)
     digitalWrite(greenpin, LOW);
     digitalWrite(redpin, HIGH);
   }
-  return distance;
+  return 0;
 }
 
 int ultraSensor()
@@ -106,31 +104,22 @@ int ultraSensor()
   return distance;
 }
 
-double DHTsensor()
-{
-  dblluchtvochtigheid = dht.readHumidity();
-  dbltemperatuur = dht.readTemperature();
 
-  return 0;
-}
+  
 
-double grondSensor()
-{
-  sensorValueGrond = analogRead(grondPin); 
 
-  return 0;
-}
+  
+
+
 
 double lichtSensoren()
 {
-  lichtSterkte1 = analogRead(lichtPin1);
-  lichtSterkte2 = analogRead(lichtPin2);
-  lichtSterkte3 = analogRead(lichtPin3);
+  
 
   return 0;
 }
 
-int printOpdrachten(int distance)
+int printOpdrachten(int distance, double dbltemperatuur, double dblluchtvochtigheid)
 {
   Serial.print("Distance: ");
   Serial.print(distance);
@@ -151,7 +140,7 @@ int printOpdrachten(int distance)
   return 0;
 }
 
-int omrekenProcesnaarProcenten(int distance)
+int omrekenProcesnaarProcenten(int distance, int x, int y, int z)
 {
   sensorValueGrond = ((((sensorValueGrond  - sensorRekenwaarde) * procentHulpwaarde) * procentRekenwaarde) / sensorRekenwaarde);
   distance = ((distance * procentRekenwaarde) / potDiepte) - procentRekenwaarde;
@@ -162,17 +151,28 @@ int omrekenProcesnaarProcenten(int distance)
   return 0;
 }
 
-int parsingProcesnaarString(int distance)
+int lichtSterktenaarProcenten(int x)
+{
+  (x * procentRekenwaarde) / sensorRekenwaarde;
+
+  return x;
+}
+
+int parsingProcesnaarString(int distance, double dbltemperatuur, double dblluchtvochtigheid)
 {
   strtemperatuur = strtemperatuur + dbltemperatuur;
   strluchtvochtigheid = strluchtvochtigheid + dblluchtvochtigheid;
   strwaterniveau = strwaterniveau + distance;
   strgrondvochtigheid = sensorValueGrond + strgrondvochtigheid;
-  strlichtsterkte1 = strlichtsterkte1 + lichtSterkte1;
-  strlichtsterkte2 = strlichtsterkte2 + lichtSterkte2;
-  strlichtsterkte3 = strlichtsterkte3 + lichtSterkte3;
 
   return 0;
+}
+
+String parsingProcesstring(String x, int y)
+{
+  x = x + y;
+
+  return x;
 }
 
 int grenswaardeGrondvochtigheid()
@@ -229,19 +229,26 @@ void loop()
     if(WiFi.status()== WL_CONNECTED)
     {
       //Lees alle sensoren uit
-      ultraSensor();
+      distance = ultraSensor();
 
       // DHT sensor
-      DHTsensor();
+      double dblluchtvochtigheid = dht.readHumidity();
+      double dbltemperatuur = dht.readTemperature();
 
       // Grondvochtigheids sensor
-      grondSensor();
+      int sensorValueGrond = analogRead(grondPin); 
 
       // Lichtsterkte sensoren
-      lichtSensoren();
+      int lichtSterkte1 = analogRead(lichtPin1);
+      int lichtSterkte2 = analogRead(lichtPin2);
+      int lichtSterkte3 = analogRead(lichtPin3);
+      int procentlichtSterkte1 = lichtSterktenaarProcenten(lichtSterkte1);
+      int procentlichtSterkte2 = lichtSterktenaarProcenten(lichtSterkte2);
+      int procentlichtSterkte3 = lichtSterktenaarProcenten(lichtSterkte3);
+
     
       // Print alle waardes uit (voor debugging)
-      printOpdrachten(distance);
+      printOpdrachten(distance, dbltemperatuur, dblluchtvochtigheid);
 
       
 
@@ -250,8 +257,10 @@ void loop()
 
       
       // Omzetten van alle getallen naar strings, zo kunnen ze worden meegegeven in de JSON string
-      parsingProcesnaarString(distance);
-
+      parsingProcesnaarString(distance, dbltemperatuur, dblluchtvochtigheid);
+      String strlichtSterkte1 = parsingProcesstring(strlichtsterkte1, procentlichtSterkte1);
+      String strlichtSterkte2 = parsingProcesstring(strlichtsterkte2, procentlichtSterkte2);
+      String strlichtSterkte3 = parsingProcesstring(strlichtsterkte3, procentlichtSterkte3);
       // Grenswaarde van de servo
       grenswaardeGrondvochtigheid();
       
