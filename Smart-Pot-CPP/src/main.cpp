@@ -72,23 +72,6 @@ const char* serverName = "http://smartpot.nealgeilen.nl/api/addData";
 
 //const char* serverName = "https://collect2.com/api/02f27a5d-b70b-4cc2-b451-fd9e89be984f/datarecord/";
 
-int potLed(int distance)
-{
-  if (distance < 5)
-  {
-    digitalWrite(greenpin, HIGH);
-    digitalWrite(redpin,LOW);
-    
-  }
-
-  if (distance > 25)
-  {
-    digitalWrite(greenpin, LOW);
-    digitalWrite(redpin, HIGH);
-  }
-  return 0;
-}
-
 int ultraSensor()
 {
   // Ultrasonic sensor
@@ -115,12 +98,12 @@ int lichtSterktenaarProcenten(int x)
 {
   int honderdWaarde = 100;
   int lichtdeler = 4095;
-  (x * honderdWaarde) / lichtdeler;
+  x = (x * honderdWaarde) / lichtdeler;
 
   return x;
 }
 
-int printOpdrachten(int distance, double dbltemperatuur, double dblluchtvochtigheid, int sensorValueGrond, int procentlichtSterkte1, int procentlichtSterkte2, int procentlichtSterkte3)
+int printOpdrachten(int distance, double dbltemperatuur, double dblluchtvochtigheid, int sensorValueGrond, String strlichtSterkte1, String strlichtSterkte2, String strlichtSterkte3)
 {
   Serial.print("Distance: ");
   Serial.print(distance);
@@ -132,11 +115,11 @@ int printOpdrachten(int distance, double dbltemperatuur, double dblluchtvochtigh
   Serial.print("Grondvochtigheid: ");
   Serial.println(sensorValueGrond);
   Serial.print("Lichtsterkte sensor 1: ");
-  Serial.println(procentlichtSterkte1);
+  Serial.println(strlichtSterkte1);
   Serial.print("Lichtsterkte sensor 2: ");
-  Serial.println(procentlichtSterkte2);
+  Serial.println(strlichtSterkte2);
   Serial.print("Lichtsterkte sensor 3: ");
-  Serial.println(procentlichtSterkte3);
+  Serial.println(strlichtSterkte3);
 
   return 0;
 }
@@ -172,11 +155,6 @@ int grenswaardeGrondvochtigheid()
   return 0;
 }
 
-
-  
-
-
-
 void setup() 
 {
   Serial.begin(115200);
@@ -185,9 +163,7 @@ void setup()
   pinMode(echoPin, INPUT); 
   pinMode(greenpin, OUTPUT);
   pinMode(redpin, OUTPUT);
-  //pinMode(redPin, OUTPUT);
-  //pinMode(greenPin, OUTPUT);
-
+  
   dht.begin();
 
   WiFi.begin(ssid, password);
@@ -206,7 +182,17 @@ void setup()
 void loop()
 {
   int distance = ultraSensor();
-  potLed(distance);
+  if (distance < 5)
+  {
+    digitalWrite(greenpin, HIGH);
+    digitalWrite(redpin,LOW);
+  }
+
+  if (distance > 25)
+  {
+    digitalWrite(greenpin, LOW);
+    digitalWrite(redpin, HIGH);
+  }
 
   if ((millis() - lastTime) > timerDelay) 
   {
@@ -227,21 +213,14 @@ void loop()
       int lichtSterkte1 = analogRead(lichtPin1);
       int lichtSterkte2 = analogRead(lichtPin2);
       int lichtSterkte3 = analogRead(lichtPin3);
+
+
+      // Procentuele omrekening van sensorwaardes
       int procentDistance = distanceNaarprocenten(distance);
       int procentGrondvochtigheid = grondVochtigheidNaarprocenten(sensorValueGrond);
       int procentlichtSterkte1 = lichtSterktenaarProcenten(lichtSterkte1);
       int procentlichtSterkte2 = lichtSterktenaarProcenten(lichtSterkte2);
       int procentlichtSterkte3 = lichtSterktenaarProcenten(lichtSterkte3);
-      
-
-    
-      // Print alle waardes uit (voor debugging)
-      printOpdrachten(distance, dbltemperatuur, dblluchtvochtigheid, procentlichtSterkte1, procentlichtSterkte2, procentlichtSterkte3);
-
-      
-
-      // Procentuele omrekening van alle getallen
-
       
       // Omzetten van alle getallen naar strings, zo kunnen ze worden meegegeven in de JSON string
       String strlichtSterkte1 = parsingProcesstring(strlichtsterkte1, procentlichtSterkte1);
@@ -255,6 +234,8 @@ void loop()
       // Grenswaarde van de servo
       grenswaardeGrondvochtigheid();
       
+      // Print alle waardes uit (voor debugging)
+      printOpdrachten(distance, dbltemperatuur, dblluchtvochtigheid, sensorValueGrond, strlichtSterkte1, strlichtSterkte2, strlichtsterkte1);
       
       HTTPClient http;
       http.begin(serverName);
@@ -302,6 +283,17 @@ void loop()
     
   }
  
- 
+    if (distance < 5)
+  {
+    digitalWrite(greenpin, HIGH);
+    digitalWrite(redpin,LOW);
+    
+  }
+
+  if (distance > 25)
+  {
+    digitalWrite(greenpin, LOW);
+    digitalWrite(redpin, HIGH);
+  }
 
 }
