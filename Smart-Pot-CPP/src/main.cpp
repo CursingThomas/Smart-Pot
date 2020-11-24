@@ -23,6 +23,7 @@ const int trigPin = 27;
 
 // magic number handlers
 const int honderdWaarde = 100;
+const int maxwaardeSensor = 4095;
 
 
 // Aanroepen van benodigdheden voor miscellaneous functies binnen de code
@@ -70,16 +71,14 @@ String parsingProcesstring(String x, int y)
 
 int lichtSterktenaarProcenten(int x)
 {
-  int honderdWaarde = 100;
   int lichtdeler = 4095;
   x = (x * honderdWaarde) / lichtdeler;
 
   return x;
 }
-
-int printOpdrachten(int distance, double dbltemperatuur, double dblluchtvochtigheid, int sensorValueGrond, String strlichtSterkte1, String strlichtSterkte2, String strlichtSterkte3)
+int rawDataprint(int distance, double dbltemperatuur, double dblluchtvochtigheid, int sensorValueGrond, int lichtSterkte1, int lichtSterkte2, int lichtSterkte3)
 {
-  Serial.print("Distance: ");
+  Serial.print("Afstand: ");
   Serial.print(distance);
   Serial.println(" cm");
   Serial.print("Temperatuur: ");
@@ -88,6 +87,26 @@ int printOpdrachten(int distance, double dbltemperatuur, double dblluchtvochtigh
   Serial.println(dblluchtvochtigheid);
   Serial.print("Grondvochtigheid: ");
   Serial.println(sensorValueGrond);
+  Serial.print("Lichtsterkte sensor 1: ");
+  Serial.println(lichtSterkte1);
+  Serial.print("Lichtsterkte sensor 2: ");
+  Serial.println(lichtSterkte2);
+  Serial.print("Lichtsterkte sensor 3: ");
+  Serial.println(lichtSterkte3);
+
+  return 0;
+}
+int procentDataprint(String strwaterniveau, double dbltemperatuur, double dblluchtvochtigheid, int procentGrondvochtigheid, String strlichtSterkte1, String strlichtSterkte2, String strlichtSterkte3)
+{
+  Serial.print("Distance: ");
+  Serial.print(strwaterniveau);
+  Serial.println(" cm");
+  Serial.print("Temperatuur: ");
+  Serial.println(dbltemperatuur);
+  Serial.print("Luchtvochtigheid: ");
+  Serial.println(dblluchtvochtigheid);
+  Serial.print("Grondvochtigheid: ");
+  Serial.println(procentGrondvochtigheid);
   Serial.print("Lichtsterkte sensor 1: ");
   Serial.println(strlichtSterkte1);
   Serial.print("Lichtsterkte sensor 2: ");
@@ -101,7 +120,6 @@ int printOpdrachten(int distance, double dbltemperatuur, double dblluchtvochtigh
 int distanceNaarprocenten(int distance)
 { 
   int potDiepte = 30;
-  int honderdWaarde = 100;
   int procentDistance = ((distance * honderdWaarde) / potDiepte) - honderdWaarde;
 
   return procentDistance;
@@ -189,6 +207,9 @@ void loop()
       int procentlichtSterkte1 = lichtSterktenaarProcenten(lichtSterkte1);
       int procentlichtSterkte2 = lichtSterktenaarProcenten(lichtSterkte2);
       int procentlichtSterkte3 = lichtSterktenaarProcenten(lichtSterkte3);
+
+      // Printen van alle onbewerkte variabelen
+      rawDataprint(distance, dbltemperatuur, dblluchtvochtigheid, sensorValueGrond, lichtSterkte1, lichtSterkte2, lichtSterkte3);
       
       // Omzetten van alle getallen naar strings, zo kunnen ze worden meegegeven in de JSON string
       String strlichtSterkte1 = parsingProcesstring(strlichtSterkte1, procentlichtSterkte1);
@@ -207,8 +228,8 @@ void loop()
         myservo.write(90);
       }
       
-      // Print alle waardes uit (voor debugging)
-      printOpdrachten(distance, dbltemperatuur, dblluchtvochtigheid, sensorValueGrond, strlichtSterkte1, strlichtSterkte2, strlichtSterkte1);
+      // Print alle waardes uit die gepost worden
+      procentDataprint(strwaterniveau, dbltemperatuur, dblluchtvochtigheid, sensorValueGrond, strlichtSterkte1, strlichtSterkte2, strlichtSterkte1);
       
       HTTPClient http;
       http.begin(serverName);
@@ -223,18 +244,16 @@ void loop()
       http.addHeader("Lichtsterkte2", strlichtSterkte2);
       http.addHeader("Lichststerkte3", strlichtSterkte3);
       
-  int httpResponseCode = http.POST("{ \"Temperatuur\": "+strtemperatuur+" , \"Luchtvochtigheid\": "+strluchtvochtigheid+" , \"Grondvochtigheid\": "+strgrondvochtigheid+" , \"Waterniveau\": "+strwaterniveau+" , \"Lichtsterkte1\": "+strlichtSterkte1+" , \"Lichtsterkte2\" : "+strlichtSterkte2+" , \"Lichtsterkte3\" : "+strlichtSterkte3+"}");
-  String response = http.getString();
-  Serial.print("HTTP Response code: ");
-  Serial.println(httpResponseCode);
+      int httpResponseCode = http.POST("{ \"Temperatuur\": "+strtemperatuur+" , \"Luchtvochtigheid\": "+strluchtvochtigheid+" , \"Grondvochtigheid\": "+strgrondvochtigheid+" , \"Waterniveau\": "+strwaterniveau+" , \"Lichtsterkte1\": "+strlichtSterkte1+" , \"Lichtsterkte2\" : "+strlichtSterkte2+" , \"Lichtsterkte3\" : "+strlichtSterkte3+"}");
+      String response = http.getString();
+      Serial.print("HTTP Response code: ");
+      Serial.println(httpResponseCode);
 
       //Serial.print("Test: ");
       //Serial.println(response);      
       //Serial.println(strwaterniveau);
 
-        
       // Schoon alles op
-      
       strtemperatuur = "";
       strluchtvochtigheid = "";
       strgrondvochtigheid = "";
