@@ -76,6 +76,7 @@ int lichtSterktenaarProcenten(int x)
 
   return x;
 }
+
 int rawDataprint(int distance, double dbltemperatuur, double dblluchtvochtigheid, int sensorValueGrond, int lichtSterkte1, int lichtSterkte2, int lichtSterkte3)
 {
   Serial.print("Afstand: ");
@@ -96,6 +97,7 @@ int rawDataprint(int distance, double dbltemperatuur, double dblluchtvochtigheid
 
   return 0;
 }
+
 int procentDataprint(String strwaterniveau, double dbltemperatuur, double dblluchtvochtigheid, int procentGrondvochtigheid, String strlichtSterkte1, String strlichtSterkte2, String strlichtSterkte3)
 {
   Serial.print("Distance: ");
@@ -182,9 +184,6 @@ void loop()
    
     if(WiFi.status()== WL_CONNECTED)
     {
-      
-      
-
       //Lees alle sensoren uit
       distance = ultraSensor();
 
