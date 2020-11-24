@@ -22,34 +22,8 @@ const int redpin = 4;
 const int trigPin = 27;
 
 // magic number handlers
-const int procentHulpwaarde = -1;
-const int nulWaarde = 0;
-const int potDiepte = 30;
-const int grensWaardepostUpdate = 10;
-const int procentRekenwaarde = 100;
-const int sensorRekenwaarde = 4095;
-const int timerDelaywaarde = 1000;
+const int honderdWaarde = 100;
 
-// Declaratie variabeles
-String strluchtvochtigheid;
-String strtemperatuur;
-String strgrondvochtigheid;
-String strlichtsterkte1;
-String strlichtsterkte2;
-String strlichtsterkte3;
-String strwaterniveau;
-
-double lichtSterkte1;
-double lichtSterkte2;
-double lichtSterkte3;
-
-
-int sensorValueGrond; 
-int postCounter;
-
-long duration;
-unsigned long lastTime = nulWaarde;
-unsigned long timerDelay = timerDelaywaarde;
 
 // Aanroepen van benodigdheden voor miscellaneous functies binnen de code
 DHT dht(DHTPIN, DHTTYPE);
@@ -80,7 +54,7 @@ int ultraSensor()
   digitalWrite(trigPin, HIGH);
   delayMicroseconds(10);
   digitalWrite(trigPin, LOW);
-  duration = pulseIn(echoPin, HIGH);
+  long duration = pulseIn(echoPin, HIGH);
   // Natuurkundige berekening voor de hoeveelheid water in het reservoir
   int distance = duration * 0.034 / 2;
 
@@ -135,24 +109,11 @@ int distanceNaarprocenten(int distance)
 
 int grondVochtigheidNaarprocenten(int sensorValueGrond)
 {
-  int grondsensorRekenwaarde = 4095;
-  int negatiefRekenwaarde = -1;
-  int honderdWaarde = 100;
+  const int grondsensorRekenwaarde = 4095;
+  const int negatiefRekenwaarde = -1;
   int procentGrondvochtigheid = ((((sensorValueGrond - grondsensorRekenwaarde) * negatiefRekenwaarde) * honderdWaarde) / honderdWaarde);
 
   return procentGrondvochtigheid;
-}
-
-int grenswaardeGrondvochtigheid()
-{
-  if (sensorValueGrond < 50)
-  {
-    myservo.write(180);
-    delay(1000);
-    myservo.write(90);
-  }
-
-  return 0;
 }
 
 void setup() 
@@ -181,6 +142,10 @@ void setup()
 
 void loop()
 {
+  const int timerDelaywaarde = 1000;
+  unsigned long lastTime = 0;
+  unsigned long timerDelay = timerDelaywaarde;
+  
   int distance = ultraSensor();
   if (distance < 5)
   {
@@ -199,6 +164,9 @@ void loop()
    
     if(WiFi.status()== WL_CONNECTED)
     {
+      
+      
+
       //Lees alle sensoren uit
       distance = ultraSensor();
 
@@ -223,19 +191,24 @@ void loop()
       int procentlichtSterkte3 = lichtSterktenaarProcenten(lichtSterkte3);
       
       // Omzetten van alle getallen naar strings, zo kunnen ze worden meegegeven in de JSON string
-      String strlichtSterkte1 = parsingProcesstring(strlichtsterkte1, procentlichtSterkte1);
-      String strlichtSterkte2 = parsingProcesstring(strlichtsterkte2, procentlichtSterkte2);
-      String strlichtSterkte3 = parsingProcesstring(strlichtsterkte3, procentlichtSterkte3);
+      String strlichtSterkte1 = parsingProcesstring(strlichtSterkte1, procentlichtSterkte1);
+      String strlichtSterkte2 = parsingProcesstring(strlichtSterkte2, procentlichtSterkte2);
+      String strlichtSterkte3 = parsingProcesstring(strlichtSterkte3, procentlichtSterkte3);
       String strtemperatuur = parsingProcesstring(strtemperatuur, dbltemperatuur);
       String strluchtvochtigheid = parsingProcesstring(strluchtvochtigheid, dblluchtvochtigheid);
       String strwaterniveau = parsingProcesstring(strwaterniveau, procentDistance);
       String strgrondvochtigheid = parsingProcesstring(strgrondvochtigheid, procentGrondvochtigheid);
 
       // Grenswaarde van de servo
-      grenswaardeGrondvochtigheid();
+      if (sensorValueGrond < 50)
+      {
+        myservo.write(180);
+        delay(1000);
+        myservo.write(90);
+      }
       
       // Print alle waardes uit (voor debugging)
-      printOpdrachten(distance, dbltemperatuur, dblluchtvochtigheid, sensorValueGrond, strlichtSterkte1, strlichtSterkte2, strlichtsterkte1);
+      printOpdrachten(distance, dbltemperatuur, dblluchtvochtigheid, sensorValueGrond, strlichtSterkte1, strlichtSterkte2, strlichtSterkte1);
       
       HTTPClient http;
       http.begin(serverName);
@@ -246,11 +219,11 @@ void loop()
       http.addHeader("Luchtvochtigheid", strluchtvochtigheid);
       http.addHeader("Grondvochtigheid", strgrondvochtigheid);
       http.addHeader("Waterniveau", strwaterniveau);
-      http.addHeader("Lichtsterkte1", strlichtsterkte1);
-      http.addHeader("Lichtsterkte2", strlichtsterkte2);
-      http.addHeader("Lichststerkte3", strlichtsterkte3);
+      http.addHeader("Lichtsterkte1", strlichtSterkte1);
+      http.addHeader("Lichtsterkte2", strlichtSterkte2);
+      http.addHeader("Lichststerkte3", strlichtSterkte3);
       
-  int httpResponseCode = http.POST("{ \"Temperatuur\": "+strtemperatuur+" , \"Luchtvochtigheid\": "+strluchtvochtigheid+" , \"Grondvochtigheid\": "+strgrondvochtigheid+" , \"Waterniveau\": "+strwaterniveau+" , \"Lichtsterkte1\": "+strlichtsterkte1+" , \"Lichtsterkte2\" : "+strlichtsterkte2+" , \"Lichtsterkte3\" : "+strlichtsterkte3+"}");
+  int httpResponseCode = http.POST("{ \"Temperatuur\": "+strtemperatuur+" , \"Luchtvochtigheid\": "+strluchtvochtigheid+" , \"Grondvochtigheid\": "+strgrondvochtigheid+" , \"Waterniveau\": "+strwaterniveau+" , \"Lichtsterkte1\": "+strlichtSterkte1+" , \"Lichtsterkte2\" : "+strlichtSterkte2+" , \"Lichtsterkte3\" : "+strlichtSterkte3+"}");
   String response = http.getString();
   Serial.print("HTTP Response code: ");
   Serial.println(httpResponseCode);
@@ -265,12 +238,10 @@ void loop()
       strtemperatuur = "";
       strluchtvochtigheid = "";
       strgrondvochtigheid = "";
-      strlichtsterkte1 = "";
       strwaterniveau = "";
-      strlichtsterkte1  = "";
-      strlichtsterkte2 = "";
-      strlichtsterkte3 = "";
-      postCounter = nulWaarde;
+      strlichtSterkte1  = "";
+      strlichtSterkte2 = "";
+      strlichtSterkte3 = "";
       http.end();
     }
     
