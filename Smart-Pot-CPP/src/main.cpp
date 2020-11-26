@@ -25,7 +25,6 @@ const int trigPin = 27;
 const int honderdWaarde = 100;
 const int maxwaardeSensor = 4095;
 
-
 // Aanroepen van benodigdheden voor miscellaneous functies binnen de code
 DHT dht(DHTPIN, DHTTYPE);
 StaticJsonDocument<200> doc;
@@ -283,6 +282,6 @@ void loop()
   {
     digitalWrite(greenpin, LOW);
     digitalWrite(redpin, HIGH);
-  }
+  } 
 
 }
