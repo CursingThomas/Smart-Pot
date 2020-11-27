@@ -1,5 +1,53 @@
 #include <Arduino.h>
 
+class lichtsterkte
+{
+  public:
+  lichtsterkte(int pin);
+  void begin();
+  int pullData();
+  int processData();
+  String printData();
+
+  private:
+  int pin;
+  int processedData;
+  String strprocessedData;
+  int rawData;
+};
+
+lichtsterkte::lichtsterkte(int pin)
+{
+  pin = pin;
+}
+
+void lichtsterkte::begin()
+{
+  pinMode(pin, INPUT);
+}
+
+int lichtsterkte::pullData()
+{
+  rawData = analogRead(pin);
+
+  return rawData;
+}
+
+int lichtsterkte::processData()
+{
+  processedData = (rawData * 100) / 4095;
+
+  return processedData
+}
+
+String lichtsterkte::printData()
+{
+  strprocessedData = processedData + strprocessedData;
+  Serial.print(processedData);
+
+  return strprocessedData;
+}
+
 
 class ledHandling
 {
@@ -42,12 +90,15 @@ String ledHandling::statusVanled()
   return status;
 }
 
+
+lichtsterkte Lichtsensor1(12);
 ledHandling Led1(10);
 
 void setup() 
 {
   Serial.begin(9600);
   Led1.begin();
+  Lichtsensor1.begin();
 }
 
 void loop() 
@@ -56,4 +107,7 @@ void loop()
   Led1.aan();
   Led1.statusVanled();
   Led1.stop();
+  Lichtsensor1.pullData();
+  Lichtsensor1.processData();
+  Lichtsensor1.printData();
 }
