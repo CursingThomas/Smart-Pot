@@ -1,5 +1,6 @@
 #include <Arduino.h>
 
+
 class ledHandling
 {
   public: 
@@ -12,7 +13,6 @@ class ledHandling
   private:
   int pin;
   String status;
-
 };
 
 ledHandling::ledHandling(int pin)
