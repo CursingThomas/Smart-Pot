@@ -61,12 +61,6 @@ int ultraSensor()
   return distance;
 }
 
-String parsingProcesstring(String x, int y)
-{
-  x = x + y;
-
-  return x;
-}
 
 int lichtSterktenaarProcenten(int x)
 {
