@@ -1,3 +1,4 @@
+#include <Arduino.h>
 class ultrasonicSensor
 {
     public:
@@ -12,5 +13,7 @@ class ultrasonicSensor
     int echoPin;
     int rawData;
     int processedData;
-    
+    int distance;
+    int potDiepte = 30;
+    int honderdWaarde = 100;
 };
