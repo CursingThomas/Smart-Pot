@@ -11,7 +11,7 @@
 #include "lichtSterkte.h"
 #include "parsingProcesstring.h"
 
-
+// gangster
 // Definitions
 #define DHTTYPE DHT11
 
