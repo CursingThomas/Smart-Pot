@@ -6,6 +6,12 @@
 #include <DHT.h>
 #include <ESP32Servo.h>
 
+#include "ultrasonicSensor.h"
+#include "grondVochtigheid.h"
+#include "lichtSterkte.h"
+#include "parsingProcesstring.h"
+
+
 // Definitions
 #define DHTTYPE DHT11
 
@@ -29,6 +35,7 @@ const int maxwaardeSensor = 4095;
 DHT dht(DHTPIN, DHTTYPE);
 StaticJsonDocument<200> doc;
 Servo myservo;
+ultrasonicSensor ultraSensor1(27, 26);
 
 // Declaratie van WiFi netwerken die gebruikt kunnen worden
 
@@ -133,12 +140,11 @@ void setup()
 {
   Serial.begin(115200);
   myservo.attach(servopin);
-  pinMode(trigPin, OUTPUT); 
-  pinMode(echoPin, INPUT); 
   pinMode(greenpin, OUTPUT);
   pinMode(redpin, OUTPUT);
   
   dht.begin();
+  ultraSensor1.begin(); 
 
   WiFi.begin(ssid, password);
   Serial.println("Connecting");
@@ -159,8 +165,8 @@ void loop()
   unsigned long lastTime = 0;
   unsigned long timerDelay = timerDelaywaarde;
   
-  int distance = ultraSensor();
-  if (distance < 5)
+  ultraSensor1.getRawdata();
+  /*if (distance < 5)
   {
     digitalWrite(greenpin, HIGH);
     digitalWrite(redpin,LOW);
@@ -171,14 +177,16 @@ void loop()
     digitalWrite(greenpin, LOW);
     digitalWrite(redpin, HIGH);
   }
-
+  */
   if ((millis() - lastTime) > timerDelay) 
   {
    
     if(WiFi.status()== WL_CONNECTED)
     {
       //Lees alle sensoren uit
-      distance = ultraSensor();
+
+      //ultrasone sensor
+      ultraSensor1.getRawdata();
 
       // DHT sensor
       double dblluchtvochtigheid = dht.readHumidity();
@@ -194,7 +202,7 @@ void loop()
 
 
       // Procentuele omrekening van sensorwaardes
-      int procentDistance = distanceNaarprocenten(distance);
+      ultraSensor1.processData();
       int procentGrondvochtigheid = grondVochtigheidNaarprocenten(sensorValueGrond);
       int procentlichtSterkte1 = lichtSterktenaarProcenten(lichtSterkte1);
       int procentlichtSterkte2 = lichtSterktenaarProcenten(lichtSterkte2);
@@ -236,7 +244,7 @@ void loop()
       http.addHeader("Lichtsterkte2", strlichtSterkte2);
       http.addHeader("Lichststerkte3", strlichtSterkte3);
       
-      int httpResponseCode = http.POST("{ \"Temperatuur\": "+strtemperatuur+" , \"Luchtvochtigheid\": "+strluchtvochtigheid+" , \"Grondvochtigheid\": "+strgrondvochtigheid+" , \"Waterniveau\": "+strwaterniveau+" , \"Lichtsterkte1\": "+strlichtSterkte1+" , \"Lichtsterkte2\" : "+strlichtSterkte2+" , \"Lichtsterkte3\" : "+strlichtSterkte3+"}");
+      int httpResponseCode = http.POST("{ \"Temperatuur\": "+strtemperatuur+" , \"Luchtvochtigheid\": "+strluchtvochtigheid+" , \"Grondvochtigheid\": "+strgrondvochtigheid+" , \"Waterniveau\": "+strwaterniveau+" , \"Lichtsterkte1\": "+strlichtSterkte1+" , \"Lichtsterkte2\" : "+lichtSterkte2+" , \"Lichtsterkte3\" : "+strlichtSterkte3+"}");
       String response = http.getString();
       Serial.print("HTTP Response code: ");
       Serial.println(httpResponseCode);
