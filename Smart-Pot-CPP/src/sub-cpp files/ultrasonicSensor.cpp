@@ -26,7 +26,15 @@ int ultrasonicSensor::getRawdata()
 }
 
 int ultrasonicSensor::processData()
+{ 
+  int processedData = ((distance * honderdWaarde) / potDiepte) - honderdWaarde;
+
+  return processedData;
+}
+
+char ultrasonicSensor::printData()
 {
-  
-  int procentDistance = ((distance * honderdWaarde) / potDiepte) - honderdWaarde;
+    char strprocessedData = strprocessedData + processedData;
+
+    return strprocessedData;    
 }
