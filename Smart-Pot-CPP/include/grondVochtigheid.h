@@ -5,8 +5,8 @@ class grondVochtigheid
     grondVochtigheid(int pin);
     void begin();
     int getMoisture();
-    int processMoisture();
-    char streindwaardeMoisture();
+    int processMoisturetoPercent();
+    char printEindwaarde();
 
     private:
     int pin;

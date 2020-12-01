@@ -31,11 +31,16 @@ const int trigPin = 27;
 const int honderdWaarde = 100;
 const int maxwaardeSensor = 4095;
 
-// Aanroepen van benodigdheden voor miscellaneous functies binnen de code
+// Class declaraties
 DHT dht(DHTPIN, DHTTYPE);
+ultrasonicSensor ultraSensor1(27, 26);
+grondVochtigheid grondVochtigheidssensor1(33);
+lichtSterkte lichtSensor1(32);
+lichtSterkte lichtSensor2(35);
+lichtSterkte lichtSensor3(34);
+
 StaticJsonDocument<200> doc;
 Servo myservo;
-ultrasonicSensor ultraSensor1(27, 26);
 
 // Declaratie van WiFi netwerken die gebruikt kunnen worden
 
@@ -145,6 +150,8 @@ void setup()
   
   dht.begin();
   ultraSensor1.begin(); 
+  grondVochtigheidssensor1.begin();
+
 
   WiFi.begin(ssid, password);
   Serial.println("Connecting");
@@ -166,6 +173,8 @@ void loop()
   unsigned long timerDelay = timerDelaywaarde;
   
   ultraSensor1.getRawdata();
+  grondVochtigheidssensor1.getMoisture();
+
   /*if (distance < 5)
   {
     digitalWrite(greenpin, HIGH);
@@ -196,14 +205,14 @@ void loop()
       int sensorValueGrond = analogRead(grondPin); 
 
       // Lichtsterkte sensoren
-      int lichtSterkte1 = analogRead(lichtPin1);
-      int lichtSterkte2 = analogRead(lichtPin2);
-      int lichtSterkte3 = analogRead(lichtPin3);
+      
 
 
       // Procentuele omrekening van sensorwaardes
       ultraSensor1.processData();
-      int procentGrondvochtigheid = grondVochtigheidNaarprocenten(sensorValueGrond);
+      grondVochtigheidssensor1.processMoisturetoPercent();
+
+
       int procentlichtSterkte1 = lichtSterktenaarProcenten(lichtSterkte1);
       int procentlichtSterkte2 = lichtSterktenaarProcenten(lichtSterkte2);
       int procentlichtSterkte3 = lichtSterktenaarProcenten(lichtSterkte3);

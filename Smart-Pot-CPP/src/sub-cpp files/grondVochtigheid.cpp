@@ -13,5 +13,23 @@ void grondVochtigheid::begin()
 
 int grondVochtigheid::getMoisture()
 {
+    rawData = analogRead(pin);
     
+    return rawData;
+}
+
+int grondVochtigheid::processMoisturetoPercent()
+{
+    processedData = ((rawData * 100) / 4095);
+
+    return processedData;
+}
+
+char grondVochtigheid::printEindwaarde()
+{
+    strprocessedData = strprocessedData + processedData;
+    
+    Serial.print(strprocessedData);
+
+    return strprocessedData;
 }

@@ -1,31 +1,31 @@
 #include <Arduino.h>
 #include "lichtSterkte.h"
 
-lichtsterkte::lichtsterkte(int pin)
+lichtSterkte::lichtSterkte(int pin)
 {
   pin = pin;
 }
 
-void lichtsterkte::begin()
+void lichtSterkte::begin()
 {
   pinMode(pin, INPUT);
 }
 
-int lichtsterkte::pullData()
+int lichtSterkte::pullData()
 {
   rawData = analogRead(pin);
 
   return rawData;
 }
 
-int lichtsterkte::processData()
+int lichtSterkte::processData()
 {
   processedData = (rawData * 100) / 4095;
 
   return processedData;
 }
 
-char lichtsterkte::printData()
+char lichtSterkte::printData()
 {
   strprocessedData = processedData + strprocessedData;
   Serial.print(processedData);
