@@ -6,7 +6,7 @@ class lichtSterkte
   void begin();
   int pullData();
   int processData();
-  char printData();
+  void printData();
 
   private:
   int pin;

@@ -27,7 +27,6 @@ const int lichtPin3 = 34;
 const int greenpin = 2;
 const int redpin = 4;
 const int trigPin = 27;
-int Distance;
 
 // magic number handlers
 const int honderdWaarde = 100;
@@ -60,80 +59,11 @@ const char* serverName = "http://smartpot.nealgeilen.nl/api/addData";
 
 //const char* serverName = "https://collect2.com/api/02f27a5d-b70b-4cc2-b451-fd9e89be984f/datarecord/";
 
-int lichtSterktenaarProcenten(int x)
-{
-  int lichtdeler = 4095;
-  x = (x * honderdWaarde) / lichtdeler;
-
-  return x;
-}
-
-int rawDataprint(int distance, double dbltemperatuur, double dblluchtvochtigheid, int sensorValueGrond, int lichtSterkte1, int lichtSterkte2, int lichtSterkte3)
-{
-  Serial.print("Afstand: ");
-  Serial.print(distance);
-  Serial.println(" cm");
-  Serial.print("Temperatuur: ");
-  Serial.println(dbltemperatuur);
-  Serial.print("Luchtvochtigheid: ");
-  Serial.println(dblluchtvochtigheid);
-  Serial.print("Grondvochtigheid: ");
-  Serial.println(sensorValueGrond);
-  Serial.print("Lichtsterkte sensor 1: ");
-  Serial.println(lichtSterkte1);
-  Serial.print("Lichtsterkte sensor 2: ");
-  Serial.println(lichtSterkte2);
-  Serial.print("Lichtsterkte sensor 3: ");
-  Serial.println(lichtSterkte3);
-
-  return 0;
-}
-
-int procentDataprint(String strwaterniveau, double dbltemperatuur, double dblluchtvochtigheid, int procentGrondvochtigheid, String strlichtSterkte1, String strlichtSterkte2, String strlichtSterkte3)
-{
-  Serial.print("Distance: ");
-  Serial.print(strwaterniveau);
-  Serial.println(" cm");
-  Serial.print("Temperatuur: ");
-  Serial.println(dbltemperatuur);
-  Serial.print("Luchtvochtigheid: ");
-  Serial.println(dblluchtvochtigheid);
-  Serial.print("Grondvochtigheid: ");
-  Serial.println(procentGrondvochtigheid);
-  Serial.print("Lichtsterkte sensor 1: ");
-  Serial.println(strlichtSterkte1);
-  Serial.print("Lichtsterkte sensor 2: ");
-  Serial.println(strlichtSterkte2);
-  Serial.print("Lichtsterkte sensor 3: ");
-  Serial.println(strlichtSterkte3);
-
-  return 0;
-}
-
-int distanceNaarprocenten(int distance)
-{ 
-  int potDiepte = 30;
-  int procentDistance = ((distance * honderdWaarde) / potDiepte) - honderdWaarde;
-
-  return procentDistance;
-}
-
-int grondVochtigheidNaarprocenten(int sensorValueGrond)
-{
-  const int grondsensorRekenwaarde = 4095;
-  const int negatiefRekenwaarde = -1;
-  int procentGrondvochtigheid = ((((sensorValueGrond - grondsensorRekenwaarde) * negatiefRekenwaarde) * honderdWaarde) / honderdWaarde);
-
-  return procentGrondvochtigheid;
-}
 
 void setup() 
 {
   Serial.begin(115200);
-  myservo.attach(servopin);
-  pinMode(greenpin, OUTPUT);
-  pinMode(redpin, OUTPUT);
-  
+  myservo.attach(servopin);  
   dht.begin();
   ultraSensor1.begin(); 
   grondVochtigheidssensor1.begin();
@@ -197,7 +127,7 @@ void loop()
       lichtSensor2.pullData();
 
       // Procentuele omrekening van sensorwaardes
-      Distance = ultraSensor1.processData();
+      ultraSensor1.processData();
       grondVochtigheidssensor1.processMoisturetoPercent();
       lichtSensor1.processData();
       lichtSensor2.processData();

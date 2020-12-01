@@ -13,8 +13,7 @@ void lichtSterkte::begin()
 
 int lichtSterkte::pullData()
 {
-  rawData = analogRead(pin);
-
+  rawData = analogRead(pin); 
   return rawData;
 }
 
@@ -25,10 +24,9 @@ int lichtSterkte::processData()
   return processedData;
 }
 
-char lichtSterkte::printData()
+void lichtSterkte::printData()
 {
   strprocessedData = processedData + strprocessedData;
-  Serial.print(processedData);
-
-  return strprocessedData;
+  Serial.print("Raw data: " + rawData);
+  Serial.print("Processed data: " + processedData);
 }

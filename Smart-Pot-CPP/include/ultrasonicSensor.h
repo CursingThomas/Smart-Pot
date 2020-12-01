@@ -6,7 +6,8 @@ class ultrasonicSensor
     void begin();
     int getRawdata();
     int processData();
-    char printData();
+    void printRawdata();
+    void printProcesseddata();
 
     private:
     int trigPin;
