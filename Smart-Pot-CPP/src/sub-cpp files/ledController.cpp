@@ -13,3 +13,7 @@ void ledController::begin()
     pinMode(pinR, OUTPUT);
 }
 
+void ledController::setStatus()
+{
+    
+}

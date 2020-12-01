@@ -1,3 +1,4 @@
+#include <Arduino.h>
 class ledController
 {
     public:
@@ -8,6 +9,5 @@ class ledController
     private:
     int pinG;
     int pinR;
-    
 };
 

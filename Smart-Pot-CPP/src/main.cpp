@@ -10,6 +10,7 @@
 #include "grondVochtigheid.h"
 #include "lichtSterkte.h"
 #include "parsingProcesstring.h"
+#include "ledController.h"
 
 // gangster
 // Definitions
@@ -26,7 +27,7 @@ const int lichtPin3 = 34;
 const int greenpin = 2;
 const int redpin = 4;
 const int trigPin = 27;
-int test;
+int Distance;
 
 // magic number handlers
 const int honderdWaarde = 100;
@@ -196,7 +197,7 @@ void loop()
       lichtSensor2.pullData();
 
       // Procentuele omrekening van sensorwaardes
-      ultraSensor1.processData();
+      Distance = ultraSensor1.processData();
       grondVochtigheidssensor1.processMoisturetoPercent();
       lichtSensor1.processData();
       lichtSensor2.processData();
