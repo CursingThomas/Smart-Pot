@@ -33,9 +33,14 @@ int ultrasonicSensor::processData()
   return processedData;
 }
 
-char ultrasonicSensor::printData()
+ultrasonicSensor::printRawdata()
 {
-    char strprocessedData = strprocessedData + processedData;
+    char strrawData = strrawData + rawData;
 
-    return strprocessedData;    
+    return strrawData;    
+}
+
+ultrasonicSensor::printProcesseddata()
+{
+  char strprocessedData = strprocessedData + processedData
 }

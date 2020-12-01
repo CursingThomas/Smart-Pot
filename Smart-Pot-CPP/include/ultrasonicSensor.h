@@ -15,6 +15,7 @@ class ultrasonicSensor
     int rawData;
     int processedData;
     char strprocessedData;
+    char strrawData;
     int distance;
     int potDiepte = 30;
     int honderdWaarde = 100;
