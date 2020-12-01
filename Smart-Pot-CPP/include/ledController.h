@@ -1,7 +1,13 @@
 class ledController
 {
     public:
+    ledController(int pinG, int pinR);
     void begin();
-    void getStatus();
+    void setStatus();
+
+    private:
+    int pinG;
+    int pinR;
     
 };
+

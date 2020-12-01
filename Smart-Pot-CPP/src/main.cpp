@@ -26,6 +26,7 @@ const int lichtPin3 = 34;
 const int greenpin = 2;
 const int redpin = 4;
 const int trigPin = 27;
+int test;
 
 // magic number handlers
 const int honderdWaarde = 100;
@@ -57,22 +58,6 @@ const char* password = "";
 const char* serverName = "http://smartpot.nealgeilen.nl/api/addData";
 
 //const char* serverName = "https://collect2.com/api/02f27a5d-b70b-4cc2-b451-fd9e89be984f/datarecord/";
-
-int ultraSensor()
-{
-  // Ultrasonic sensor
-  digitalWrite(trigPin, LOW);
-  delayMicroseconds(2);
-  digitalWrite(trigPin, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(trigPin, LOW);
-  long duration = pulseIn(echoPin, HIGH);
-  // Natuurkundige berekening voor de hoeveelheid water in het reservoir
-  int distance = duration * 0.034 / 2;
-
-  return distance;
-}
-
 
 int lichtSterktenaarProcenten(int x)
 {
@@ -173,7 +158,8 @@ void loop()
   unsigned long timerDelay = timerDelaywaarde;
   
   ultraSensor1.getRawdata();
-  grondVochtigheidssensor1.getMoisture();
+  
+  
 
   /*if (distance < 5)
   {
@@ -202,33 +188,24 @@ void loop()
       double dbltemperatuur = dht.readTemperature();
 
       // Grondvochtigheids sensor
-      int sensorValueGrond = analogRead(grondPin); 
+      grondVochtigheidssensor1.getMoisture();
 
       // Lichtsterkte sensoren
-      
-
+      lichtSensor1.pullData();
+      lichtSensor2.pullData();
+      lichtSensor2.pullData();
 
       // Procentuele omrekening van sensorwaardes
       ultraSensor1.processData();
       grondVochtigheidssensor1.processMoisturetoPercent();
-
-
-      int procentlichtSterkte1 = lichtSterktenaarProcenten(lichtSterkte1);
-      int procentlichtSterkte2 = lichtSterktenaarProcenten(lichtSterkte2);
-      int procentlichtSterkte3 = lichtSterktenaarProcenten(lichtSterkte3);
+      lichtSensor1.processData();
+      lichtSensor2.processData();
+      lichtSensor3.processData();
 
       // Printen van alle onbewerkte variabelen
       rawDataprint(distance, dbltemperatuur, dblluchtvochtigheid, sensorValueGrond, lichtSterkte1, lichtSterkte2, lichtSterkte3);
       
-      // Omzetten van alle getallen naar strings, zo kunnen ze worden meegegeven in de JSON string
-      String strlichtSterkte1 = parsingProcesstring(strlichtSterkte1, procentlichtSterkte1);
-      String strlichtSterkte2 = parsingProcesstring(strlichtSterkte2, procentlichtSterkte2);
-      String strlichtSterkte3 = parsingProcesstring(strlichtSterkte3, procentlichtSterkte3);
-      String strtemperatuur = parsingProcesstring(strtemperatuur, dbltemperatuur);
-      String strluchtvochtigheid = parsingProcesstring(strluchtvochtigheid, dblluchtvochtigheid);
-      String strwaterniveau = parsingProcesstring(strwaterniveau, procentDistance);
-      String strgrondvochtigheid = parsingProcesstring(strgrondvochtigheid, procentGrondvochtigheid);
-
+      
       // Grenswaarde van de servo
       if (sensorValueGrond < 50)
       {
