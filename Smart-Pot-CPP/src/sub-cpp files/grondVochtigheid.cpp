@@ -25,11 +25,26 @@ int grondVochtigheid::processMoisturetoPercent()
     return processedData;
 }
 
-char grondVochtigheid::printEindwaarde()
+void grondVochtigheid::printRawdata()
+{
+    Serial.print(rawData);
+}
+
+void grondVochtigheid::printProcesseddata()
+{
+    Serial.print(processedData);
+}
+
+String grondVochtigheid::dataTostring()
 {
     strprocessedData = strprocessedData + processedData;
-    
-    Serial.print(strprocessedData);
+
+    return strprocessedData;
+}
+
+String grondVochtigheid::clearString()
+{
+    strprocessedData = "";
 
     return strprocessedData;
 }

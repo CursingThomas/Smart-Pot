@@ -24,9 +24,27 @@ int lichtSterkte::processData()
   return processedData;
 }
 
-void lichtSterkte::printData()
+void lichtSterkte::printRawdata()
 {
-  strprocessedData = processedData + strprocessedData;
-  Serial.print("Raw data: " + rawData);
-  Serial.print("Processed data: " + processedData);
+  Serial.print(rawData);
 }
+
+void lichtSterkte::printProcesseddata()
+{
+  Serial.print(processedData);
+}
+
+String lichtSterkte::dataTostring()
+{
+  strprocessedData = strprocessedData + processedData;
+
+  return strprocessedData;
+}
+
+String lichtSterkte::clearString()
+{
+  strprocessedData = "";
+
+  return strprocessedData;
+}
+

@@ -8,15 +8,18 @@ class ultrasonicSensor
     int processData();
     void printRawdata();
     void printProcesseddata();
+    String dataTostring();
+    String clearString();
+    
 
     private:
     int trigPin;
     int echoPin;
     int rawData;
     int processedData;
-    char strprocessedData;
-    char strrawData;
-    int distance;
+    String strprocessedData;
+    int distance;   
     int potDiepte = 30;
     int honderdWaarde = 100;
+
 };

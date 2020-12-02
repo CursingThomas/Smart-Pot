@@ -33,14 +33,26 @@ int ultrasonicSensor::processData()
   return processedData;
 }
 
-ultrasonicSensor::printRawdata()
+void ultrasonicSensor::printRawdata()
 {
-    char strrawData = strrawData + rawData;
-
-    return strrawData;    
+  Serial.print(rawData);
 }
 
-ultrasonicSensor::printProcesseddata()
+void ultrasonicSensor::printProcesseddata()
 {
-  char strprocessedData = strprocessedData + processedData
+  Serial.print(processedData);
+}
+
+String ultrasonicSensor::dataTostring()
+{
+  strprocessedData = strprocessedData + processedData;
+
+  return strprocessedData;
+}
+
+String ultrasonicSensor::clearString()
+{
+  strprocessedData = "";
+
+  return strprocessedData;
 }

@@ -9,10 +9,7 @@
 #include "ultrasonicSensor.h"
 #include "grondVochtigheid.h"
 #include "lichtSterkte.h"
-#include "parsingProcesstring.h"
-#include "ledController.h"
 
-// gangster
 // Definitions
 #define DHTTYPE DHT11
 
@@ -134,7 +131,6 @@ void loop()
       lichtSensor3.processData();
 
       // Printen van alle onbewerkte variabelen
-      rawDataprint(distance, dbltemperatuur, dblluchtvochtigheid, sensorValueGrond, lichtSterkte1, lichtSterkte2, lichtSterkte3);
       
       
       // Grenswaarde van de servo
@@ -146,20 +142,19 @@ void loop()
       }
       
       // Print alle waardes uit die gepost worden
-      procentDataprint(strwaterniveau, dbltemperatuur, dblluchtvochtigheid, sensorValueGrond, strlichtSterkte1, strlichtSterkte2, strlichtSterkte1);
-      
       HTTPClient http;
       http.begin(serverName);
       http.addHeader("Content-Type", "application/json");
       http.addHeader("X-AUTH-TOKEN", "TEST");
       http.addHeader("X-AUTH-ID", "wajdhlawkjhdlawjkdhawkjdh");
-      http.addHeader("Temperatuur", strtemperatuur);
+
+      /*http.addHeader("Temperatuur", strtemperatuur);
       http.addHeader("Luchtvochtigheid", strluchtvochtigheid);
       http.addHeader("Grondvochtigheid", strgrondvochtigheid);
       http.addHeader("Waterniveau", strwaterniveau);
       http.addHeader("Lichtsterkte1", strlichtSterkte1);
       http.addHeader("Lichtsterkte2", strlichtSterkte2);
-      http.addHeader("Lichststerkte3", strlichtSterkte3);
+      http.addHeader("Lichststerkte3", strlichtSterkte3); */
       
       int httpResponseCode = http.POST("{ \"Temperatuur\": "+strtemperatuur+" , \"Luchtvochtigheid\": "+strluchtvochtigheid+" , \"Grondvochtigheid\": "+strgrondvochtigheid+" , \"Waterniveau\": "+strwaterniveau+" , \"Lichtsterkte1\": "+strlichtSterkte1+" , \"Lichtsterkte2\" : "+lichtSterkte2+" , \"Lichtsterkte3\" : "+strlichtSterkte3+"}");
       String response = http.getString();
@@ -171,13 +166,7 @@ void loop()
       //Serial.println(strwaterniveau);
 
       // Schoon alles op
-      strtemperatuur = "";
-      strluchtvochtigheid = "";
-      strgrondvochtigheid = "";
-      strwaterniveau = "";
-      strlichtSterkte1  = "";
-      strlichtSterkte2 = "";
-      strlichtSterkte3 = "";
+      
       http.end();
     }
     
@@ -190,17 +179,5 @@ void loop()
     
   }
  
-    if (distance < 5)
-  {
-    digitalWrite(greenpin, HIGH);
-    digitalWrite(redpin,LOW);
     
-  }
-
-  if (distance > 25)
-  {
-    digitalWrite(greenpin, LOW);
-    digitalWrite(redpin, HIGH);
-  } 
-
 }

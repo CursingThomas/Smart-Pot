@@ -6,12 +6,16 @@ class lichtSterkte
   void begin();
   int pullData();
   int processData();
-  void printData();
+  void printRawdata();
+  void printProcesseddata();
+  String dataTostring();
+  String clearString();
+
 
   private:
   int pin;
   int processedData;
-  char strprocessedData;
+  String strprocessedData;
   int rawData;
 };
 
