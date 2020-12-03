@@ -4,16 +4,16 @@ class lichtSterkte
   lichtSterkte(int pin);
   int pullData();
   int processData();
-  void printRawdata();
-  void printProcesseddata();
-  String dataTostring();
-  String clearString();
+  void printRawData();
+  void printProcessedData();
+  String dataToString();
+  void clearString();
 
 
   private:
   int pin;
   int processedData;
-  String strprocessedData;
+  String strProcessedData;
   int rawData;
 };
 

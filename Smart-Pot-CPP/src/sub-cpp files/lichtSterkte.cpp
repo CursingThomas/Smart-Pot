@@ -20,27 +20,25 @@ int lichtSterkte::processData()
   return processedData;
 }
 
-void lichtSterkte::printRawdata()
+void lichtSterkte::printRawData()
 {
   Serial.print(rawData);
 }
 
-void lichtSterkte::printProcesseddata()
+void lichtSterkte::printProcessedData()
 {
   Serial.print(processedData);
 }
 
-String lichtSterkte::dataTostring()
+String lichtSterkte::dataToString()
 {
-  strprocessedData = strprocessedData + processedData;
+  strProcessedData = strProcessedData + processedData;
 
-  return strprocessedData;
+  return strProcessedData;
 }
 
-String lichtSterkte::clearString()
+void lichtSterkte::clearString()
 {
-  strprocessedData = "";
-
-  return strprocessedData;
+  strProcessedData = "";
 }
 

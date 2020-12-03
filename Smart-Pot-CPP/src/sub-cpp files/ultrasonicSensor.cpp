@@ -3,17 +3,13 @@
 
 ultrasonicSensor::ultrasonicSensor(int trigPin, int echoPin)
 {
-    trigPin = trigPin;
-    echoPin = echoPin;
+  this->trigPin = trigPin;
+  this->echoPin = echoPin;
+  pinMode(trigPin, OUTPUT); 
+  pinMode(echoPin, INPUT);
 }
 
-void ultrasonicSensor::begin()
-{
-    pinMode(trigPin, OUTPUT); 
-    pinMode(echoPin, INPUT); 
-}
-
-int ultrasonicSensor::getRawdata()
+int ultrasonicSensor::getRawData()
 {
   digitalWrite(trigPin, LOW);
   delayMicroseconds(2);
@@ -33,26 +29,26 @@ int ultrasonicSensor::processData()
   return processedData;
 }
 
-void ultrasonicSensor::printRawdata()
+void ultrasonicSensor::printRawData()
 {
   Serial.print(rawData);
 }
 
-void ultrasonicSensor::printProcesseddata()
+void ultrasonicSensor::printProcessedData()
 {
   Serial.print(processedData);
 }
 
-String ultrasonicSensor::dataTostring()
+String ultrasonicSensor::dataToString()
 {
-  strprocessedData = strprocessedData + processedData;
+  strProcessedData = strProcessedData + processedData;
 
-  return strprocessedData;
+  return strProcessedData;
 }
 
 String ultrasonicSensor::clearString()
 {
-  strprocessedData = "";
+  strProcessedData = "";
 
-  return strprocessedData;
+  return strProcessedData;
 }

@@ -5,10 +5,10 @@ class grondVochtigheid
     grondVochtigheid(int pin);
     void begin();
     int getMoisture();
-    int processMoisturetoPercent();
-    void printRawdata();
+    int processMoistureToPercent();
+    void printRawData();
     void printProcesseddata();
-    String dataTostring();
+    String dataToString();
     String clearString();
     void giveWater();
 
@@ -16,5 +16,5 @@ class grondVochtigheid
     int pin;
     int rawData;
     int processedData;
-    String strprocessedData;
+    String strProcessedData;
 };

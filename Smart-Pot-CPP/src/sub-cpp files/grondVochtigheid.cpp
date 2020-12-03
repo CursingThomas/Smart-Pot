@@ -1,14 +1,9 @@
 #include <Arduino.h>
-#include <ESP32Servo.h>
 #include "grondVochtigheid.h"
 
 grondVochtigheid::grondVochtigheid(int pin)
 {
     this->pin = pin;
-}
-
-void grondVochtigheid::begin()
-{
     pinMode(pin, INPUT);
 }
 
@@ -19,14 +14,14 @@ int grondVochtigheid::getMoisture()
     return rawData;
 }
 
-int grondVochtigheid::processMoisturetoPercent()
+int grondVochtigheid::processMoistureToPercent()
 {
     processedData = ((rawData * 100) / 4095);
 
     return processedData;
 }
 
-void grondVochtigheid::printRawdata()
+void grondVochtigheid::printRawData()
 {
     Serial.print(rawData);
 }
@@ -36,7 +31,7 @@ void grondVochtigheid::printProcesseddata()
     Serial.print(processedData);
 }
 
-String grondVochtigheid::dataTostring()
+String grondVochtigheid::dataToString()
 {
     strprocessedData = strprocessedData + processedData;
 
@@ -48,9 +43,4 @@ String grondVochtigheid::clearString()
     strprocessedData = "";
 
     return strprocessedData;
-}
-
-void grondVochtigheid::giveWater()
-{
-    
 }

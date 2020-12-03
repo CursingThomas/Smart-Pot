@@ -30,11 +30,11 @@ const int trigPin = 27;
 // magic number handlers
 const int honderdWaarde = 100;
 const int maxwaardeSensor = 4095;
-
+const int DHTPIN = 14;
 // Class declaraties
 DHT dht(DHTPIN, DHTTYPE);
-ultrasonicSensor ultraSensor1(27, 26);
-grondVochtigheid grondVochtigheidssensor1(33);
+ultrasonicSensor ultrasonicSensor1(27, 26);
+grondVochtigheid grondVochtigheidsSensor1(33);
 lichtSterkte lichtSensor1(32);
 lichtSterkte lichtSensor2(35);
 lichtSterkte lichtSensor3(34);
@@ -61,8 +61,8 @@ const char* serverName = "http://smartpot.nealgeilen.nl/api/addData";
 void giveWater()
 {
   int servoPin = 15;
-  int rawData = ultrasonicSensor1.get
-  if (rawData < 50)
+  int moisture = grondVochtigheidsSensor1.getMoisture();
+  if (moisture < 50)
   {
     Servo myservo;
     myservo.attach(servoPin);
@@ -75,12 +75,8 @@ void giveWater()
 
 void setup() 
 {
-  Serial.begin(115200); 
+  Serial.begin(115200);
   dht.begin();
-  ultraSensor1.begin(); 
-  grondVochtigheidssensor1.begin();
-
-
   WiFi.begin(ssid, password);
   Serial.println("Connecting");
 
@@ -100,7 +96,7 @@ void loop()
   unsigned long lastTime = 0;
   unsigned long timerDelay = timerDelaywaarde;
   
-  ultraSensor1.getRawdata();
+  ultrasonicSensor1.getRawData();
   
   
 
@@ -124,7 +120,7 @@ void loop()
       //Lees alle sensoren uit
 
       //ultrasone sensor
-      int distance = ultraSensor1.getRawdata();
+      int distance = ultrasonicSensor1.getRawData();
 
 
       // DHT sensor
@@ -132,7 +128,7 @@ void loop()
       double dbltemperatuur = dht.readTemperature();
 
       // Grondvochtigheids sensor
-      grondVochtigheidssensor1.getMoisture();
+      grondVochtigheidsSensor1.getMoisture();
 
       // Lichtsterkte sensoren
       lichtSensor1.pullData();
@@ -140,19 +136,30 @@ void loop()
       lichtSensor2.pullData();
 
       // Procentuele omrekening van sensorwaardes
-      ultraSensor1.processData();
-      grondVochtigheidssensor1.processMoisturetoPercent();
+      ultrasonicSensor1.processData();
+      grondVochtigheidsSensor1.processMoisturetoPercent();
       lichtSensor1.processData();
       lichtSensor2.processData();
       lichtSensor3.processData();
 
       // Printen van alle onbewerkte variabelen
-      
+      ultrasonicSensor1.printRawdData();
+      grondVochtigheidsSensor1.printRawData();
+      lichtSensor1.printRawData();
+      lichtSensor2.printRawData();
+      lichtSensor3.printRawData();
+
       
       // Grenswaarde van de servo
       
       
       // Print alle waardes uit die gepost worden
+      ultrasonicSensor1.printProcessedData();
+      grondVochtigheidsSensor1.printProcessedData();
+      lichtSensor1.printProcessedData();
+      lichtSensor2.printProcessedData();
+      lichtSensor3.printProcessedData();
+
       HTTPClient http;
       http.begin(serverName);
       http.addHeader("Content-Type", "application/json");
