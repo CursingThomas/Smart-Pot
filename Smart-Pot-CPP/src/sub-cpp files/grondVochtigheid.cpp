@@ -1,9 +1,10 @@
 #include <Arduino.h>
+#include <ESP32Servo.h>
 #include "grondVochtigheid.h"
 
 grondVochtigheid::grondVochtigheid(int pin)
 {
-    pin = pin;
+    this->pin = pin;
 }
 
 void grondVochtigheid::begin()
@@ -47,4 +48,9 @@ String grondVochtigheid::clearString()
     strprocessedData = "";
 
     return strprocessedData;
+}
+
+void grondVochtigheid::giveWater()
+{
+    
 }

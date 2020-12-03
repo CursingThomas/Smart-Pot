@@ -13,6 +13,7 @@
 // Definitions
 #define DHTTYPE DHT11
 
+/*
 // Const int's van pins
 const int DHTPIN = 14;
 const int servopin = 15;
@@ -24,6 +25,7 @@ const int lichtPin3 = 34;
 const int greenpin = 2;
 const int redpin = 4;
 const int trigPin = 27;
+*/
 
 // magic number handlers
 const int honderdWaarde = 100;
@@ -38,7 +40,7 @@ lichtSterkte lichtSensor2(35);
 lichtSterkte lichtSensor3(34);
 
 StaticJsonDocument<200> doc;
-Servo myservo;
+
 
 // Declaratie van WiFi netwerken die gebruikt kunnen worden
 
@@ -56,11 +58,24 @@ const char* serverName = "http://smartpot.nealgeilen.nl/api/addData";
 
 //const char* serverName = "https://collect2.com/api/02f27a5d-b70b-4cc2-b451-fd9e89be984f/datarecord/";
 
+void giveWater()
+{
+  int servoPin = 15;
+  int rawData = ultrasonicSensor1.get
+  if (rawData < 50)
+  {
+    Servo myservo;
+    myservo.attach(servoPin);
+    myservo.write(180);
+    delay(1000);
+    myservo.write(90);
+  }
+
+}
 
 void setup() 
 {
-  Serial.begin(115200);
-  myservo.attach(servopin);  
+  Serial.begin(115200); 
   dht.begin();
   ultraSensor1.begin(); 
   grondVochtigheidssensor1.begin();
@@ -109,7 +124,8 @@ void loop()
       //Lees alle sensoren uit
 
       //ultrasone sensor
-      ultraSensor1.getRawdata();
+      int distance = ultraSensor1.getRawdata();
+
 
       // DHT sensor
       double dblluchtvochtigheid = dht.readHumidity();
@@ -134,12 +150,7 @@ void loop()
       
       
       // Grenswaarde van de servo
-      if (sensorValueGrond < 50)
-      {
-        myservo.write(180);
-        delay(1000);
-        myservo.write(90);
-      }
+      
       
       // Print alle waardes uit die gepost worden
       HTTPClient http;
@@ -181,3 +192,25 @@ void loop()
  
     
 }
+
+
+
+int hoi()
+{
+  int distance = ultrasonicSensor1.getRawdata();
+  if (distance == 0)
+  {
+    pinMode(pinG, HIGH);
+
+  }
+
+}
+
+if (rawData < 50)
+    {
+        Servo myservo;
+        myservo.attach(servopin); 
+        myservo.write(180);
+        delay(1000);
+        myservo.write(90);
+    }

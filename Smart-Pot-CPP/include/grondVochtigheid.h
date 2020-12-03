@@ -10,6 +10,7 @@ class grondVochtigheid
     void printProcesseddata();
     String dataTostring();
     String clearString();
+    void giveWater();
 
     private:
     int pin;

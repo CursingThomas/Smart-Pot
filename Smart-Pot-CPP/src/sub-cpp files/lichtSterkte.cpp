@@ -3,12 +3,8 @@
 
 lichtSterkte::lichtSterkte(int pin)
 {
-  pin = pin;
-}
-
-void lichtSterkte::begin()
-{
-  pinMode(pin, INPUT);
+  this->pin = pin;
+  pinMode(pin,INPUT);
 }
 
 int lichtSterkte::pullData()

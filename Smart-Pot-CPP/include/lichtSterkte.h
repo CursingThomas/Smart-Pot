@@ -1,9 +1,7 @@
-#include <Arduino.h>
 class lichtSterkte
 {
   public:
   lichtSterkte(int pin);
-  void begin();
   int pullData();
   int processData();
   void printRawdata();
