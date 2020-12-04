@@ -11,9 +11,6 @@
 #include "lichtSterkte.h"
 #include "ledController.h"
 
-// Definitions
-
-
 /*
 // Const int's van pins
 const int DHTPIN = 14;
@@ -33,6 +30,7 @@ const int DHTTYPE = DHT11;
 const int honderdWaarde = 100;
 const int maxwaardeSensor = 4095;
 const int DHTPIN = 14;
+
 // Class declaraties
 DHT dht(DHTPIN, DHTTYPE);
 ultrasonicSensor ultrasonicSensor1(27, 26);
@@ -60,6 +58,20 @@ const char* password = "";
 const char* serverName = "http://smartpot.nealgeilen.nl/api/addData";
 
 //const char* serverName = "https://collect2.com/api/02f27a5d-b70b-4cc2-b451-fd9e89be984f/datarecord/";
+
+String parseDHTNaarString(double x)
+{
+  String y = y + x;
+
+  return y;
+}
+
+String clearStringFunction(String x)
+{
+  x = "";
+
+  return x;
+}
 
 void giveWater()
 {
@@ -92,7 +104,7 @@ void setLedStatus()
 
 void setup() 
 {
-  Serial.begin(115200);
+  Serial.begin(9600);
   dht.begin();
   WiFi.begin(ssid, password);
   Serial.println("Connecting");
@@ -112,6 +124,7 @@ void loop()
   const int timerDelaywaarde = 1000;
   unsigned long lastTime = 0;
   unsigned long timerDelay = timerDelaywaarde;
+  Serial.print("joi");
   setLedStatus();
   giveWater();
 
@@ -126,8 +139,8 @@ void loop()
       ultrasonicSensor1.getRawData();
       
       // DHT sensor
-      dht.readHumidity();
-      dht.readTemperature();
+      double luchtVochtigheid = dht.readHumidity();
+      double temperatuur = dht.readTemperature();
 
       // Grondvochtigheids sensor
       grondVochtigheidsSensor1.getMoisture();
@@ -164,32 +177,33 @@ void loop()
       String strLichtSterkte1 = lichtSensor1.dataToString();
       String strLichtSterkte2 = lichtSensor2.dataToString();
       String strLichtSterkte3 = lichtSensor3.dataToString();
+      String strTemperatuur = parseDHTNaarString(temperatuur);
+      String strLuchtVochtigheid = parseDHTNaarString(luchtVochtigheid);
 
       HTTPClient http;
       http.begin(serverName);
       http.addHeader("Content-Type", "application/json");
       http.addHeader("X-AUTH-TOKEN", "TEST");
-      http.addHeader("X-AUTH-ID", "wajdhlawkjhdlawjkdhawkjdh");
-
-      /*http.addHeader("Temperatuur", strtemperatuur);
-      http.addHeader("Luchtvochtigheid", strluchtvochtigheid);
-      http.addHeader("Grondvochtigheid", strgrondvochtigheid);
-      http.addHeader("Waterniveau", strwaterniveau);
-      http.addHeader("Lichtsterkte1", strlichtSterkte1);
-      http.addHeader("Lichtsterkte2", strlichtSterkte2);
-      http.addHeader("Lichststerkte3", strlichtSterkte3); */
-      
-      int httpResponseCode = http.POST("{ \"Temperatuur\": "+strtemperatuur+" , \"Luchtvochtigheid\": "+humidity hier+" , \"Grondvochtigheid\": "+strGrondVochtigheid1+" , \"Waterniveau\": "+distance1+" , \"Lichtsterkte1\": "+strLichtSterkte1+" , \"Lichtsterkte2\" : "+strLichtSterkte2+" , \"Lichtsterkte3\" : "+strLichtSterkte3+"}");
+      http.addHeader("X-AUTH-ID", "wajdhlawkjhdlawjkdhawkjdh");      
+      int httpResponseCode = http.POST("{ \"Temperatuur\": "+strTemperatuur+" , \"Luchtvochtigheid\": "+strLuchtVochtigheid+" , \"Grondvochtigheid\": "+strGrondVochtigheid1+" , \"Waterniveau\": "+distance1+" , \"Lichtsterkte1\": "+strLichtSterkte1+" , \"Lichtsterkte2\" : "+strLichtSterkte2+" , \"Lichtsterkte3\" : "+strLichtSterkte3+"}");
       String response = http.getString();
       Serial.print("HTTP Response code: ");
       Serial.println(httpResponseCode);
 
-      //Serial.print("Test: ");
-      //Serial.println(response);      
-      //Serial.println(strwaterniveau);
-
       // Schoon alles op
-      
+      ultrasonicSensor1.clearString();
+      grondVochtigheidsSensor1.clearString();
+      lichtSensor1.clearString();
+      lichtSensor2.clearString();
+      lichtSensor3.clearString();
+
+      distance1 = clearStringFunction(distance1);
+      strGrondVochtigheid1 = clearStringFunction(strGrondVochtigheid1);
+      strLichtSterkte1 = clearStringFunction(strLichtSterkte1);
+      strLichtSterkte2 = clearStringFunction(strLichtSterkte2);
+      strLichtSterkte3 = clearStringFunction(strLichtSterkte3);
+
+
       http.end();
     }
     
@@ -198,29 +212,5 @@ void loop()
       Serial.println("WiFi Disconnected");
     }   
     lastTime = millis();
-
-    
   }
- 
-    
 }
-
-int hoi()
-{
-  int distance = ultrasonicSensor1.getRawdata();
-  if (distance == 0)
-  {
-    pinMode(pinG, HIGH);
-
-  }
-
-}
-
-if (rawData < 50)
-    {
-        Servo myservo;
-        myservo.attach(servopin); 
-        myservo.write(180);
-        delay(1000);
-        myservo.write(90);
-    }
