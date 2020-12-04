@@ -26,21 +26,21 @@ void grondVochtigheid::printRawData()
     Serial.print(rawData);
 }
 
-void grondVochtigheid::printProcesseddata()
+void grondVochtigheid::printProcessedData()
 {
     Serial.print(processedData);
 }
 
 String grondVochtigheid::dataToString()
 {
-    strprocessedData = strprocessedData + processedData;
+    strProcessedData = strProcessedData + processedData;
 
-    return strprocessedData;
+    return strProcessedData;
 }
 
 String grondVochtigheid::clearString()
 {
-    strprocessedData = "";
+    strProcessedData = "";
 
-    return strprocessedData;
+    return strProcessedData;
 }

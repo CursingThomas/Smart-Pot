@@ -9,9 +9,10 @@
 #include "ultrasonicSensor.h"
 #include "grondVochtigheid.h"
 #include "lichtSterkte.h"
+#include "ledController.h"
 
 // Definitions
-#define DHTTYPE DHT11
+
 
 /*
 // Const int's van pins
@@ -28,6 +29,7 @@ const int trigPin = 27;
 */
 
 // magic number handlers
+const int DHTTYPE = DHT11;
 const int honderdWaarde = 100;
 const int maxwaardeSensor = 4095;
 const int DHTPIN = 14;
@@ -35,6 +37,7 @@ const int DHTPIN = 14;
 DHT dht(DHTPIN, DHTTYPE);
 ultrasonicSensor ultrasonicSensor1(27, 26);
 grondVochtigheid grondVochtigheidsSensor1(33);
+ledController RGBLed1(2,4);
 lichtSterkte lichtSensor1(32);
 lichtSterkte lichtSensor2(35);
 lichtSterkte lichtSensor3(34);
@@ -70,7 +73,21 @@ void giveWater()
     delay(1000);
     myservo.write(90);
   }
+}
 
+void setLedStatus()
+{
+  int distance = ultrasonicSensor1.getRawData();
+  
+  if (distance > 25)
+  {
+    RGBLed1.setLedStatusVol();
+  }
+
+  if (distance < 5)
+  {
+    RGBLed1.setLedStatusLeeg();
+  }
 }
 
 void setup() 
@@ -95,23 +112,9 @@ void loop()
   const int timerDelaywaarde = 1000;
   unsigned long lastTime = 0;
   unsigned long timerDelay = timerDelaywaarde;
-  
-  ultrasonicSensor1.getRawData();
-  
-  
+  setLedStatus();
+  giveWater();
 
-  /*if (distance < 5)
-  {
-    digitalWrite(greenpin, HIGH);
-    digitalWrite(redpin,LOW);
-  }
-
-  if (distance > 25)
-  {
-    digitalWrite(greenpin, LOW);
-    digitalWrite(redpin, HIGH);
-  }
-  */
   if ((millis() - lastTime) > timerDelay) 
   {
    
@@ -120,12 +123,11 @@ void loop()
       //Lees alle sensoren uit
 
       //ultrasone sensor
-      int distance = ultrasonicSensor1.getRawData();
-
-
+      ultrasonicSensor1.getRawData();
+      
       // DHT sensor
-      double dblluchtvochtigheid = dht.readHumidity();
-      double dbltemperatuur = dht.readTemperature();
+      dht.readHumidity();
+      dht.readTemperature();
 
       // Grondvochtigheids sensor
       grondVochtigheidsSensor1.getMoisture();
@@ -137,28 +139,31 @@ void loop()
 
       // Procentuele omrekening van sensorwaardes
       ultrasonicSensor1.processData();
-      grondVochtigheidsSensor1.processMoisturetoPercent();
+      grondVochtigheidsSensor1.processMoistureToPercent();
       lichtSensor1.processData();
       lichtSensor2.processData();
       lichtSensor3.processData();
 
       // Printen van alle onbewerkte variabelen
-      ultrasonicSensor1.printRawdData();
+      ultrasonicSensor1.printRawData();
       grondVochtigheidsSensor1.printRawData();
       lichtSensor1.printRawData();
       lichtSensor2.printRawData();
       lichtSensor3.printRawData();
 
-      
-      // Grenswaarde van de servo
-      
-      
       // Print alle waardes uit die gepost worden
       ultrasonicSensor1.printProcessedData();
       grondVochtigheidsSensor1.printProcessedData();
       lichtSensor1.printProcessedData();
       lichtSensor2.printProcessedData();
       lichtSensor3.printProcessedData();
+
+      // Data naar string
+      String distance1 = ultrasonicSensor1.dataToString();
+      String strGrondVochtigheid1 = grondVochtigheidsSensor1.dataToString();
+      String strLichtSterkte1 = lichtSensor1.dataToString();
+      String strLichtSterkte2 = lichtSensor2.dataToString();
+      String strLichtSterkte3 = lichtSensor3.dataToString();
 
       HTTPClient http;
       http.begin(serverName);
@@ -174,7 +179,7 @@ void loop()
       http.addHeader("Lichtsterkte2", strlichtSterkte2);
       http.addHeader("Lichststerkte3", strlichtSterkte3); */
       
-      int httpResponseCode = http.POST("{ \"Temperatuur\": "+strtemperatuur+" , \"Luchtvochtigheid\": "+strluchtvochtigheid+" , \"Grondvochtigheid\": "+strgrondvochtigheid+" , \"Waterniveau\": "+strwaterniveau+" , \"Lichtsterkte1\": "+strlichtSterkte1+" , \"Lichtsterkte2\" : "+lichtSterkte2+" , \"Lichtsterkte3\" : "+strlichtSterkte3+"}");
+      int httpResponseCode = http.POST("{ \"Temperatuur\": "+strtemperatuur+" , \"Luchtvochtigheid\": "+humidity hier+" , \"Grondvochtigheid\": "+strGrondVochtigheid1+" , \"Waterniveau\": "+distance1+" , \"Lichtsterkte1\": "+strLichtSterkte1+" , \"Lichtsterkte2\" : "+strLichtSterkte2+" , \"Lichtsterkte3\" : "+strLichtSterkte3+"}");
       String response = http.getString();
       Serial.print("HTTP Response code: ");
       Serial.println(httpResponseCode);
@@ -199,8 +204,6 @@ void loop()
  
     
 }
-
-
 
 int hoi()
 {

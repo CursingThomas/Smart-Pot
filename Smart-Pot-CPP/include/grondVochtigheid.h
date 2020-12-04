@@ -7,7 +7,7 @@ class grondVochtigheid
     int getMoisture();
     int processMoistureToPercent();
     void printRawData();
-    void printProcesseddata();
+    void printProcessedData();
     String dataToString();
     String clearString();
     void giveWater();
