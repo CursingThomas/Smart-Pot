@@ -23,12 +23,13 @@ int grondVochtigheid::processMoistureToPercent()
 
 void grondVochtigheid::printRawData()
 {
-    Serial.print(rawData);
+    Serial.print("Raw data grondvochtigheid: ");
+    Serial.println(rawData);
 }
 
 void grondVochtigheid::printProcessedData()
 {
-    Serial.print(processedData);
+    Serial.println(processedData);
 }
 
 String grondVochtigheid::dataToString()

@@ -22,12 +22,12 @@ int lichtSterkte::processData()
 
 void lichtSterkte::printRawData()
 {
-  Serial.print(rawData);
+  Serial.println(rawData);
 }
 
 void lichtSterkte::printProcessedData()
 {
-  Serial.print(processedData);
+  Serial.println(processedData);
 }
 
 String lichtSterkte::dataToString()

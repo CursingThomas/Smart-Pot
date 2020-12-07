@@ -11,6 +11,8 @@
 #include "lichtSterkte.h"
 #include "ledController.h"
 
+#define DHTTYPE DHT11
+
 /*
 // Const int's van pins
 const int DHTPIN = 14;
@@ -26,10 +28,11 @@ const int trigPin = 27;
 */
 
 // magic number handlers
-const int DHTTYPE = DHT11;
 const int honderdWaarde = 100;
 const int maxwaardeSensor = 4095;
 const int DHTPIN = 14;
+//String strLuchtVochtigheid;
+//String strTemperatuur;
 
 // Class declaraties
 DHT dht(DHTPIN, DHTTYPE);
@@ -55,13 +58,14 @@ const char* ssid = "12connect";
 const char* password = "";
 
 // Declaratie van de eindbestemming
-const char* serverName = "http://smartpot.nealgeilen.nl/api/addData";
+const char* serverName = "http://smartpot.nealgeilen.nl/api";
 
 //const char* serverName = "https://collect2.com/api/02f27a5d-b70b-4cc2-b451-fd9e89be984f/datarecord/";
 
 String parseDHTNaarString(double x)
 {
-  String y = y + x;
+  String y;
+  y = y + x;
 
   return y;
 }
@@ -102,6 +106,10 @@ void setLedStatus()
   }
 }
 
+void printMessagesLichtSensor(int count)
+{
+  Serial.print(""):
+}
 void setup() 
 {
   Serial.begin(9600);
@@ -124,7 +132,6 @@ void loop()
   const int timerDelaywaarde = 1000;
   unsigned long lastTime = 0;
   unsigned long timerDelay = timerDelaywaarde;
-  Serial.print("joi");
   setLedStatus();
   giveWater();
 
@@ -149,7 +156,7 @@ void loop()
       lichtSensor1.pullData();
       lichtSensor2.pullData();
       lichtSensor2.pullData();
-
+      
       // Procentuele omrekening van sensorwaardes
       ultrasonicSensor1.processData();
       grondVochtigheidsSensor1.processMoistureToPercent();
@@ -166,11 +173,15 @@ void loop()
 
       // Print alle waardes uit die gepost worden
       ultrasonicSensor1.printProcessedData();
+      Serial.print("Processed grondvochtigheid: ");
       grondVochtigheidsSensor1.printProcessedData();
+      Serial.print("Processed lichtsterkte 1: ");
       lichtSensor1.printProcessedData();
+      Serial.print("Processed lichtsterkte 2: ");
       lichtSensor2.printProcessedData();
+      Serial.print("Processed lichtsterkte 3: ");
       lichtSensor3.printProcessedData();
-
+      
       // Data naar string
       String distance1 = ultrasonicSensor1.dataToString();
       String strGrondVochtigheid1 = grondVochtigheidsSensor1.dataToString();
@@ -179,7 +190,7 @@ void loop()
       String strLichtSterkte3 = lichtSensor3.dataToString();
       String strTemperatuur = parseDHTNaarString(temperatuur);
       String strLuchtVochtigheid = parseDHTNaarString(luchtVochtigheid);
-
+      
       HTTPClient http;
       http.begin(serverName);
       http.addHeader("Content-Type", "application/json");
@@ -189,7 +200,7 @@ void loop()
       String response = http.getString();
       Serial.print("HTTP Response code: ");
       Serial.println(httpResponseCode);
-
+      Serial.print("Ewaja");
       // Schoon alles op
       ultrasonicSensor1.clearString();
       grondVochtigheidsSensor1.clearString();
