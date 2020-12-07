@@ -10,6 +10,7 @@
 #include "grondVochtigheid.h"
 #include "lichtSterkte.h"
 #include "ledController.h"
+#include "waterPump.h"
 
 #define DHTTYPE DHT11
 
@@ -77,7 +78,7 @@ String clearStringFunction(String x)
   return x;
 }
 
-void giveWater()
+void giveWaterServo()
 {
   int servoPin = 15;
   int moisture = grondVochtigheidsSensor1.getMoisture();
@@ -89,6 +90,16 @@ void giveWater()
     delay(1000);
     myservo.write(90);
   }
+}
+
+void giveWaterPomp()
+{
+  int moisture = grondVochtigheidsSensor1.getMoisture();
+  if (moisture < 50)
+  {
+    waterPump waterPump1(5);
+    waterPump1.giveWater(10);
+  }  
 }
 
 void setLedStatus()
@@ -142,7 +153,7 @@ void loop()
   unsigned long lastTime = 0;
   unsigned long timerDelay = timerDelaywaarde;
   setLedStatus();
-  giveWater();
+  giveWaterServo();
 
   if ((millis() - lastTime) > timerDelay) 
   {
