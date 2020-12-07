@@ -31,12 +31,13 @@ int ultrasonicSensor::processData()
 
 void ultrasonicSensor::printRawData()
 {
-  Serial.print("Processed ultrasonic: ");
+  Serial.print("Raw data ultrasonic: ");
   Serial.println(rawData);
 }
 
 void ultrasonicSensor::printProcessedData()
 {
+  Serial.print("Processed data ultrasonic: ");
   Serial.println(processedData);
 }
 

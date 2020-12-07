@@ -106,9 +106,18 @@ void setLedStatus()
   }
 }
 
-void printMessagesLichtSensor(int count)
+void printMessagesProcessedLichtSensor(int count)
 {
-  Serial.print(""):
+  Serial.print("Processed data lichtsensor ");
+  Serial.print(count);
+  Serial.print(": ") ;
+}
+
+void printMessagesRawDataLichtSensor(int count)
+{
+  Serial.print("Raw data lichtsensor ");
+  Serial.print(count);
+  Serial.print(": ") ;
 }
 void setup() 
 {
@@ -167,19 +176,21 @@ void loop()
       // Printen van alle onbewerkte variabelen
       ultrasonicSensor1.printRawData();
       grondVochtigheidsSensor1.printRawData();
+      printMessagesRawDataLichtSensor(1);
       lichtSensor1.printRawData();
+      printMessagesRawDataLichtSensor(2);
       lichtSensor2.printRawData();
+      printMessagesRawDataLichtSensor(3);
       lichtSensor3.printRawData();
 
       // Print alle waardes uit die gepost worden
       ultrasonicSensor1.printProcessedData();
-      Serial.print("Processed grondvochtigheid: ");
       grondVochtigheidsSensor1.printProcessedData();
-      Serial.print("Processed lichtsterkte 1: ");
+      printMessagesProcessedLichtSensor(1);
       lichtSensor1.printProcessedData();
-      Serial.print("Processed lichtsterkte 2: ");
+      printMessagesProcessedLichtSensor(2);
       lichtSensor2.printProcessedData();
-      Serial.print("Processed lichtsterkte 3: ");
+      printMessagesProcessedLichtSensor(3);
       lichtSensor3.printProcessedData();
       
       // Data naar string
@@ -200,7 +211,7 @@ void loop()
       String response = http.getString();
       Serial.print("HTTP Response code: ");
       Serial.println(httpResponseCode);
-      Serial.print("Ewaja");
+      
       // Schoon alles op
       ultrasonicSensor1.clearString();
       grondVochtigheidsSensor1.clearString();
@@ -213,7 +224,6 @@ void loop()
       strLichtSterkte1 = clearStringFunction(strLichtSterkte1);
       strLichtSterkte2 = clearStringFunction(strLichtSterkte2);
       strLichtSterkte3 = clearStringFunction(strLichtSterkte3);
-
 
       http.end();
     }

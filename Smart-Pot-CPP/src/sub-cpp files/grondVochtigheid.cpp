@@ -29,6 +29,7 @@ void grondVochtigheid::printRawData()
 
 void grondVochtigheid::printProcessedData()
 {
+    Serial.print("Processed data grondvochtigheid: ");
     Serial.println(processedData);
 }
 
