@@ -11,6 +11,7 @@
 #include "lichtSterkte.h"
 #include "ledController.h"
 #include "waterPump.h"
+#include "MyDHT.h"
 
 #define DHTTYPE DHT11
 
@@ -36,13 +37,14 @@ const int DHTPIN = 14;
 //String strTemperatuur;
 
 // Class declaraties
-DHT dht(DHTPIN, DHTTYPE);
+//DHT dht(DHTPIN, DHTTYPE);
 ultrasonicSensor ultrasonicSensor1(27, 26);
 grondVochtigheid grondVochtigheidsSensor1(33);
 ledController RGBLed1(2,4);
 lichtSterkte lichtSensor1(32);
 lichtSterkte lichtSensor2(35);
 lichtSterkte lichtSensor3(34);
+MyDHT dht(DHTPIN, DHTTYPE, 6);
 
 StaticJsonDocument<200> doc;
 
@@ -62,21 +64,6 @@ const char* password = "";
 const char* serverName = "http://smartpot.nealgeilen.nl/api";
 
 //const char* serverName = "https://collect2.com/api/02f27a5d-b70b-4cc2-b451-fd9e89be984f/datarecord/";
-
-String parseDHTNaarString(double x)
-{
-  String y;
-  y = y + x;
-
-  return y;
-}
-
-String clearStringFunction(String x)
-{
-  x = "";
-
-  return x;
-}
 
 void giveWaterServo()
 {
@@ -133,7 +120,7 @@ void printMessagesRawDataLichtSensor(int count)
 void setup() 
 {
   Serial.begin(9600);
-  dht.begin();
+  //dht.begin();
   WiFi.begin(ssid, password);
   Serial.println("Connecting");
 
@@ -168,6 +155,7 @@ void loop()
       // DHT sensor
       double luchtVochtigheid = dht.readHumidity();
       double temperatuur = dht.readTemperature();
+      
 
       // Grondvochtigheids sensor
       grondVochtigheidsSensor1.getMoisture();
@@ -185,6 +173,8 @@ void loop()
       lichtSensor3.processData();
 
       // Printen van alle onbewerkte variabelen
+
+
       ultrasonicSensor1.printRawData();
       grondVochtigheidsSensor1.printRawData();
       printMessagesRawDataLichtSensor(1);
@@ -195,6 +185,8 @@ void loop()
       lichtSensor3.printRawData();
 
       // Print alle waardes uit die gepost worden
+
+
       ultrasonicSensor1.printProcessedData();
       grondVochtigheidsSensor1.printProcessedData();
       printMessagesProcessedLichtSensor(1);
@@ -210,8 +202,12 @@ void loop()
       String strLichtSterkte1 = lichtSensor1.dataToString();
       String strLichtSterkte2 = lichtSensor2.dataToString();
       String strLichtSterkte3 = lichtSensor3.dataToString();
-      String strTemperatuur = parseDHTNaarString(temperatuur);
-      String strLuchtVochtigheid = parseDHTNaarString(luchtVochtigheid);
+      String strTemperatuur = dht.dataToString(temperatuur);
+      String strLuchtVochtigheid = dht.dataToString(luchtVochtigheid);
+      
+      
+      //String strTemperatuur = parseDHTNaarString(temperatuur);
+      //String strLuchtVochtigheid = parseDHTNaarString(luchtVochtigheid);
       
       HTTPClient http;
       http.begin(serverName);
@@ -229,8 +225,8 @@ void loop()
       strLichtSterkte1 = lichtSensor1.clearString();
       strLichtSterkte2 = lichtSensor2.clearString();
       strLichtSterkte3 = lichtSensor3.clearString();
-      strTemperatuur = clearStringFunction(strTemperatuur);
-      strLuchtVochtigheid = clearStringFunction(strLuchtVochtigheid);
+      strTemperatuur = dht.clearString(strTemperatuur);
+      strLuchtVochtigheid = dht.clearString(strLuchtVochtigheid);
 
       http.end();
     }
