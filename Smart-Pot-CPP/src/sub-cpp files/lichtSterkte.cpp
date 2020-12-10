@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include "lichtSterkte.h"
 
-lichtSterkte::lichtSterkte(int pin)
+lichtSterkte::lichtSterkte(int pin, String sensorNaam)
 {
   this->pin = pin;
   pinMode(pin,INPUT);
@@ -22,11 +22,17 @@ int lichtSterkte::processData()
 
 void lichtSterkte::printRawData()
 {
+  Serial.print("Processed data lichtsensor ");
+  Serial.print(sensorNaam);
+  Serial.print(": ") ;
   Serial.println(rawData);
 }
 
 void lichtSterkte::printProcessedData()
 {
+  Serial.print("Processed data lichtsensor ");
+  Serial.print(sensorNaam);
+  Serial.print(": ") ;
   Serial.println(processedData);
 }
 

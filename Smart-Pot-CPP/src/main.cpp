@@ -41,9 +41,9 @@ const int DHTPIN = 14;
 ultrasonicSensor ultrasonicSensor1(27, 26);
 grondVochtigheid grondVochtigheidsSensor1(33);
 ledController RGBLed1(2,4);
-lichtSterkte lichtSensor1(32);
-lichtSterkte lichtSensor2(35);
-lichtSterkte lichtSensor3(34);
+lichtSterkte lichtSensor1(32, Lichtsensor1);
+lichtSterkte lichtSensor2(35, Lichtsensor2);
+lichtSterkte lichtSensor3(34, Lichtsensor3);
 MyDHT dht(DHTPIN, DHTTYPE, 6);
 
 StaticJsonDocument<200> doc;
@@ -117,6 +117,7 @@ void printMessagesRawDataLichtSensor(int count)
   Serial.print(count);
   Serial.print(": ") ;
 }
+
 void setup() 
 {
   Serial.begin(9600);
@@ -173,8 +174,8 @@ void loop()
       lichtSensor3.processData();
 
       // Printen van alle onbewerkte variabelen
-
-
+      dht.printTemperatuur();
+      dht.printLuchtVochtigheid();
       ultrasonicSensor1.printRawData();
       grondVochtigheidsSensor1.printRawData();
       printMessagesRawDataLichtSensor(1);

@@ -1,7 +1,7 @@
 class lichtSterkte
 {
   public:
-  lichtSterkte(int pin);
+  lichtSterkte(int pin, String sensorNaam);
   int pullData();
   int processData();
   void printRawData();
@@ -14,6 +14,7 @@ class lichtSterkte
   int pin;
   int processedData;
   String strProcessedData;
+  String sensorNaam;
   int rawData;
 };
 
