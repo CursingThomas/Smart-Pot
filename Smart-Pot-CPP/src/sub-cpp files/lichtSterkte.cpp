@@ -37,8 +37,10 @@ String lichtSterkte::dataToString()
   return strProcessedData;
 }
 
-void lichtSterkte::clearString()
+String lichtSterkte::clearString()
 {
   strProcessedData = "";
+
+  return strProcessedData;
 }
 

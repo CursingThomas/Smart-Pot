@@ -7,7 +7,7 @@ class lichtSterkte
   void printRawData();
   void printProcessedData();
   String dataToString();
-  void clearString();
+  String clearString();
 
 
   private:

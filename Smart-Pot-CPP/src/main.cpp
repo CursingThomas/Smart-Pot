@@ -224,17 +224,13 @@ void loop()
       Serial.println(httpResponseCode);
       
       // Schoon alles op
-      ultrasonicSensor1.clearString();
-      grondVochtigheidsSensor1.clearString();
-      lichtSensor1.clearString();
-      lichtSensor2.clearString();
-      lichtSensor3.clearString();
-
-      distance1 = clearStringFunction(distance1);
-      strGrondVochtigheid1 = clearStringFunction(strGrondVochtigheid1);
-      strLichtSterkte1 = clearStringFunction(strLichtSterkte1);
-      strLichtSterkte2 = clearStringFunction(strLichtSterkte2);
-      strLichtSterkte3 = clearStringFunction(strLichtSterkte3);
+      distance1 = ultrasonicSensor1.clearString();
+      strGrondVochtigheid1 = grondVochtigheidsSensor1.clearString();
+      strLichtSterkte1 = lichtSensor1.clearString();
+      strLichtSterkte2 = lichtSensor2.clearString();
+      strLichtSterkte3 = lichtSensor3.clearString();
+      strTemperatuur = clearStringFunction(strTemperatuur);
+      strLuchtVochtigheid = clearStringFunction(strLuchtVochtigheid);
 
       http.end();
     }
