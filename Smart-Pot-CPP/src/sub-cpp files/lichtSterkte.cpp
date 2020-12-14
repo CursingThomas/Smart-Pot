@@ -4,6 +4,7 @@
 lichtSterkte::lichtSterkte(int pin, String sensorNaam)
 {
   this->pin = pin;
+  this-> sensorNaam = sensorNaam;
   pinMode(pin,INPUT);
 }
 
@@ -22,7 +23,7 @@ int lichtSterkte::processData()
 
 void lichtSterkte::printRawData()
 {
-  Serial.print("Processed data lichtsensor ");
+  Serial.print("Raw data lichtsensor ");
   Serial.print(sensorNaam);
   Serial.print(": ") ;
   Serial.println(rawData);

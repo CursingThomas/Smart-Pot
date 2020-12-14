@@ -3,15 +3,15 @@
 #include <WiFi.h>
 #include <HTTPClient.h>
 #include <ArduinoJson.h>
-#include <DHT.h>
 #include <ESP32Servo.h>
 
-#include "ultrasonicSensor.h"
-#include "grondVochtigheid.h"
-#include "lichtSterkte.h"
-#include "ledController.h"
-#include "waterPump.h"
-#include "MyDHT.h"
+#include <MyDHT.h>
+#include <ultrasonicSensor.h>
+#include <grondVochtigheid.h>
+#include <lichtSterkte.h>
+#include <ledController.h>
+#include <waterPump.h>
+
 
 #define DHTTYPE DHT11
 
@@ -41,24 +41,23 @@ const int DHTPIN = 14;
 ultrasonicSensor ultrasonicSensor1(27, 26);
 grondVochtigheid grondVochtigheidsSensor1(33);
 ledController RGBLed1(2,4);
-lichtSterkte lichtSensor1(32, Lichtsensor1);
-lichtSterkte lichtSensor2(35, Lichtsensor2);
-lichtSterkte lichtSensor3(34, Lichtsensor3);
+lichtSterkte lichtSensor1(32, "Lichtsensor 1");
+lichtSterkte lichtSensor2(35, "Lichtsensor 2");
+lichtSterkte lichtSensor3(34, "Lichtsensor 3");
 MyDHT dht(DHTPIN, DHTTYPE, 6);
 
 StaticJsonDocument<200> doc;
 
-
 // Declaratie van WiFi netwerken die gebruikt kunnen worden
 
-//const char* ssid = "schenktol";
-//const char* password = "TLE143TLE";
+const char* ssid = "schenktol";
+const char* password = "TLE143TLE";
 
 //const char* ssid = "wjavandertol";
 //const char* password = "WT3030wt";
 
-const char* ssid = "12connect";
-const char* password = "";
+//const char* ssid = "12connect";
+//const char* password = "";
 
 // Declaratie van de eindbestemming
 const char* serverName = "http://smartpot.nealgeilen.nl/api";
@@ -82,6 +81,7 @@ void giveWaterServo()
 void giveWaterPomp()
 {
   int moisture = grondVochtigheidsSensor1.getMoisture();
+
   if (moisture < 50)
   {
     waterPump waterPump1(5);
@@ -102,20 +102,6 @@ void setLedStatus()
   {
     RGBLed1.setLedStatusLeeg();
   }
-}
-
-void printMessagesProcessedLichtSensor(int count)
-{
-  Serial.print("Processed data lichtsensor ");
-  Serial.print(count);
-  Serial.print(": ") ;
-}
-
-void printMessagesRawDataLichtSensor(int count)
-{
-  Serial.print("Raw data lichtsensor ");
-  Serial.print(count);
-  Serial.print(": ") ;
 }
 
 void setup() 
@@ -178,11 +164,8 @@ void loop()
       dht.printLuchtVochtigheid();
       ultrasonicSensor1.printRawData();
       grondVochtigheidsSensor1.printRawData();
-      printMessagesRawDataLichtSensor(1);
       lichtSensor1.printRawData();
-      printMessagesRawDataLichtSensor(2);
       lichtSensor2.printRawData();
-      printMessagesRawDataLichtSensor(3);
       lichtSensor3.printRawData();
 
       // Print alle waardes uit die gepost worden
@@ -190,11 +173,8 @@ void loop()
 
       ultrasonicSensor1.printProcessedData();
       grondVochtigheidsSensor1.printProcessedData();
-      printMessagesProcessedLichtSensor(1);
       lichtSensor1.printProcessedData();
-      printMessagesProcessedLichtSensor(2);
       lichtSensor2.printProcessedData();
-      printMessagesProcessedLichtSensor(3);
       lichtSensor3.printProcessedData();
       
       // Data naar string
