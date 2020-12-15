@@ -12,7 +12,8 @@
 #include <lichtSterkte.h>
 #include <ledController.h>
 #include <waterPump.h>
-#include <MyLiquidCrystal.h>
+#include <PotentioMeter.h>
+
 
 #define DHTTYPE DHT11
 
@@ -51,7 +52,8 @@ lichtSterkte lichtSensor1(32, "Lichtsensor 1");
 lichtSterkte lichtSensor2(35, "Lichtsensor 2");
 lichtSterkte lichtSensor3(34, "Lichtsensor 3");
 MyDHT dht(DHTPIN, DHTTYPE, 6);
-MyLiquidCrystal LCD(12, 11, 5, 4, 3, 2);
+LiquidCrystal LCD(12, 11, 5, 4, 3, 2);
+PotentioMeter potMeter1(1000); // zoek nog een pin!
 
 StaticJsonDocument<200> doc;
 
@@ -88,9 +90,12 @@ void giveWaterServo()
 
 void giveWaterPomp()
 {
+  const int potpin = 10;
   int moisture = grondVochtigheidsSensor1.getMoisture();
-
-  if (moisture < 50)
+  moisture = grondVochtigheidsSensor1.processMoistureToPercent();
+  int grenswaarde = potMeter1.readValuePot();
+  grenswaarde = potMeter1.getProcessedData();
+  if (moisture < grenswaarde)
   {
     waterPump waterPump1(5);
     waterPump1.giveWater(10);
@@ -117,7 +122,7 @@ void setup()
   Serial.begin(9600);
   WiFi.begin(ssid, password);
   Serial.println("Connecting");
-
+  LCD.begin(16,1);
   while(WiFi.status() != WL_CONNECTED) 
   {
     delay(500);
@@ -193,9 +198,10 @@ void loop()
       String strTemperatuur = dht.dataToString(temperatuur);
       String strLuchtVochtigheid = dht.dataToString(luchtVochtigheid);
       
-      
-      //String strTemperatuur = parseDHTNaarString(temperatuur);
-      //String strLuchtVochtigheid = parseDHTNaarString(luchtVochtigheid);
+      int contrast = 75;
+      LCD.setCursor(0, 0);
+      LCD.print("Temperatuur: " + String(temperatuur));
+
       
       HTTPClient http;
       http.begin(serverName);
