@@ -4,6 +4,7 @@
 #include <HTTPClient.h>
 #include <ArduinoJson.h>
 #include <ESP32Servo.h>
+#include <LiquidCrystal.h>
 
 #include <MyDHT.h>
 #include <ultrasonicSensor.h>
@@ -11,7 +12,7 @@
 #include <lichtSterkte.h>
 #include <ledController.h>
 #include <waterPump.h>
-
+#include <MyLiquidCrystal.h>
 
 #define DHTTYPE DHT11
 
@@ -27,17 +28,22 @@ const int lichtPin3 = 34;
 const int greenpin = 2;
 const int redpin = 4;
 const int trigPin = 27;
+
+const int vo = 23;
+const int Rs = 22;
+const int E = 1;
+const int D4 = 3;
+const int D5 = 21;
+const int D6 = 19;
+const int D7 = 18;
 */
 
 // magic number handlers
 const int honderdWaarde = 100;
 const int maxwaardeSensor = 4095;
 const int DHTPIN = 14;
-//String strLuchtVochtigheid;
-//String strTemperatuur;
 
 // Class declaraties
-//DHT dht(DHTPIN, DHTTYPE);
 ultrasonicSensor ultrasonicSensor1(27, 26);
 grondVochtigheid grondVochtigheidsSensor1(33);
 ledController RGBLed1(2,4);
@@ -45,6 +51,7 @@ lichtSterkte lichtSensor1(32, "Lichtsensor 1");
 lichtSterkte lichtSensor2(35, "Lichtsensor 2");
 lichtSterkte lichtSensor3(34, "Lichtsensor 3");
 MyDHT dht(DHTPIN, DHTTYPE, 6);
+MyLiquidCrystal LCD(12, 11, 5, 4, 3, 2);
 
 StaticJsonDocument<200> doc;
 
@@ -68,6 +75,7 @@ void giveWaterServo()
 {
   int servoPin = 15;
   int moisture = grondVochtigheidsSensor1.getMoisture();
+
   if (moisture < 50)
   {
     Servo myservo;
@@ -107,7 +115,6 @@ void setLedStatus()
 void setup() 
 {
   Serial.begin(9600);
-  //dht.begin();
   WiFi.begin(ssid, password);
   Serial.println("Connecting");
 
