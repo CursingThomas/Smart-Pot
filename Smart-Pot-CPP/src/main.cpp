@@ -5,6 +5,9 @@
 #include <ArduinoJson.h>
 #include <ESP32Servo.h>
 #include <LiquidCrystal.h>
+#include <Wire.h>
+#include <Adafruit_Sensor.h>
+//#include <DHT.h>
 
 //* Include my classes.
 #include <MyDHT.h>
@@ -30,6 +33,7 @@ ledController RGBLed1(2,4);
 lichtSterkte lichtSensor1(32, "Lichtsensor 1");
 lichtSterkte lichtSensor2(35, "Lichtsensor 2");
 lichtSterkte lichtSensor3(34, "Lichtsensor 3");
+//DHT dht(DHTPIN, DHTTYPE);
 MyDHT dht(DHTPIN, DHTTYPE, 6);
 LiquidCrystal LCD(12, 11, 5, 4, 3, 2);
 PotentioMeter potMeter1(1000); // zoek nog een pin!
@@ -37,17 +41,17 @@ PotentioMeter potMeter1(1000); // zoek nog een pin!
 StaticJsonDocument<200> doc;
 
 //* Declaring usable Wi-Fi networks.
-const char* ssid = "schenktol";
-const char* password = "TLE143TLE";
+//const char* ssid = "schenktol";
+//const char* password = "TLE143TLE";
 
-//const char* ssid = "wjavandertol";
-//const char* password = "WT3030wt";
+const char* ssid = "wjavandertol";
+const char* password = "WT3030wt";
 
 //const char* ssid = "12connect";
 //const char* password = "";
 
 //* Declaring the endpoint of the HTTP Post Request.
-const char* serverName = "http://smartpot.nealgeilen.nl/api";
+const char* serverName = "http://smartpot.nealgeilen.nl/api/pot/addData";
 
 //* Function made to control a servo (functioning as a pump) which has dependencies with the grondVochtigheid class.
 void giveWaterServo()
@@ -100,10 +104,11 @@ void setLedStatus()
 void setup() 
 {
   Serial.begin(9600); // Set baudrate to 9600.
+  dht.begin();
   LCD.begin(16,1); // Call to class function . begin with parameters to determine the size of the LCD screen.
   WiFi.begin(ssid, password); // Call to class function .begin with parameters ssid and password.
   Serial.println("Connecting"); // When the above line of code is executed, print that the MC is connecting to WiFi.
-  while(WiFi.status() != WL_CONNECTED // While WiFi is not connected, print out a . to indicate the microcontroller is trying to connect to the WiFi
+  while(WiFi.status() != WL_CONNECTED) // While WiFi is not connected, print out a . to indicate the microcontroller is trying to connect to the WiFi
   {
     delay(500);
     Serial.print(".");
@@ -132,7 +137,8 @@ void loop()
       
       double luchtVochtigheid = dht.readHumidity(); // Gathers raw data of DHT11 sensor.
       double temperatuur = dht.readTemperature(); // Gathers raw data of DHT11 sensor.
-      
+      Serial.print(luchtVochtigheid);
+      Serial.print(temperatuur);
       grondVochtigheidsSensor1.getMoisture(); // Gathers raw data of soil moisture sensor.
 
       lichtSensor1.pullData(); // Gathers raw data of LDR1.
@@ -149,8 +155,8 @@ void loop()
       lichtSensor3.processData(); // Computes raw data to processed data from LDR3.
 
       //* Print out all the raw data gathered.
-      dht.printTemperatuur(); // Prints raw data from DHT11.
-      dht.printLuchtVochtigheid(); // Prints raw data from DHT11.
+      //dht.printTemperatuur(); // Prints raw data from DHT11.
+      //dht.printLuchtVochtigheid(); // Prints raw data from DHT11.
 
       ultrasonicSensor1.printRawData(); // Prints raw data from ultrasonic sensor.
 
@@ -190,6 +196,7 @@ void loop()
       http.addHeader("X-AUTH-ID", "wajdhlawkjhdlawjkdhawkjdh"); // Adds a header to the HTTP Post Request.  
       int httpResponseCode = http.POST("{ \"Temperatuur\": "+strTemperatuur+" , \"Luchtvochtigheid\": "+strLuchtVochtigheid+" , \"Grondvochtigheid\": "+strGrondVochtigheid1+" , \"Waterniveau\": "+distance1+" , \"Lichtsterkte1\": "+strLichtSterkte1+" , \"Lichtsterkte2\" : "+strLichtSterkte2+" , \"Lichtsterkte3\" : "+strLichtSterkte3+"}"); // Send the actual HTTP Post Request.
       String response = http.getString(); // Gather the response the website gives.
+      Serial.print(response);
       Serial.print("HTTP Response code: "); // Print message.
       Serial.println(httpResponseCode); // print the actual response the website gives.
       
@@ -199,9 +206,8 @@ void loop()
       strLichtSterkte1 = lichtSensor1.clearString();
       strLichtSterkte2 = lichtSensor2.clearString();
       strLichtSterkte3 = lichtSensor3.clearString();
-      strTemperatuur = dht.clearString(strTemperatuur);
-      strLuchtVochtigheid = dht.clearString(strLuchtVochtigheid);
-
+      strTemperatuur = dht.clearString();
+      strLuchtVochtigheid = dht.clearString();
       http.end(); // End the HTTP Post Request.
     }
     

@@ -9,11 +9,12 @@ MyDHT::MyDHT(uint8_t pin, uint8_t type, uint8_t count = 6) : DHT(pin,type,count)
 String MyDHT::dataToString(double x)
 {
     y = x + y;
+    x = 0;
 
     return y;
 }
 
-String MyDHT::clearString(String y)
+String MyDHT::clearString()
 {
     y = "";
 
