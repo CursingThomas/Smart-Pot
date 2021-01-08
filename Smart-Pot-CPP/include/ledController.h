@@ -1,7 +1,7 @@
-class ledController
+class LedController
 {
     public:
-    ledController(int pinG, int pinR);
+    LedController(int pinG, int pinR);
     void setLedStatusVol();
     void setLedStatusLeeg();
 

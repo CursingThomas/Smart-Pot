@@ -7,7 +7,6 @@
 #include <LiquidCrystal.h>
 #include <Wire.h>
 #include <Adafruit_Sensor.h>
-//#include <DHT.h>
 
 //* Include my classes.
 #include <MyDHT.h>
@@ -27,17 +26,15 @@ const int maxwaardeSensor = 4095;
 const int DHTPIN = 14;
 
 //* Initializing all objects.
-ultrasonicSensor ultrasonicSensor1(27, 26);
-grondVochtigheid grondVochtigheidsSensor1(33);
-ledController RGBLed1(2,4);
-lichtSterkte lichtSensor1(32, "Lichtsensor 1");
-lichtSterkte lichtSensor2(35, "Lichtsensor 2");
-lichtSterkte lichtSensor3(34, "Lichtsensor 3");
-//DHT dht(DHTPIN, DHTTYPE);
+UltrasonicSensor ultrasonicSensor1(27, 26);
+GrondVochtigheid grondVochtigheidsSensor1(33);
+LedController RGBLed1(2,4);
+LichtSterkte lichtSensor1(32, "Lichtsensor 1");
+LichtSterkte lichtSensor2(35, "Lichtsensor 2");
+LichtSterkte lichtSensor3(34, "Lichtsensor 3");
 MyDHT dht(DHTPIN, DHTTYPE, 6);
 LiquidCrystal LCD(12, 11, 5, 4, 3, 2);
 PotentioMeter potMeter1(1000); // zoek nog een pin!
-
 StaticJsonDocument<200> doc;
 
 //* Declaring usable Wi-Fi networks.
@@ -51,7 +48,7 @@ const char* password = "WT3030wt";
 //const char* password = "";
 
 //* Declaring the endpoint of the HTTP Post Request.
-const char* serverName = "http://smartpot.nealgeilen.nl/api/pot/addData";
+const char* serverName = "https://smartpot.nealgeilen.nl/api/pot/addData";
 
 //* Function made to control a servo (functioning as a pump) which has dependencies with the grondVochtigheid class.
 void giveWaterServo()
@@ -79,7 +76,7 @@ void giveWaterPomp()
   grenswaarde = potMeter1.getProcessedData();
   if (moisture < grenswaarde)
   {
-    waterPump waterPump1(5);
+    WaterPump waterPump1(5);
     waterPump1.giveWater(10);
   }  
 }
@@ -137,8 +134,6 @@ void loop()
       
       double luchtVochtigheid = dht.readHumidity(); // Gathers raw data of DHT11 sensor.
       double temperatuur = dht.readTemperature(); // Gathers raw data of DHT11 sensor.
-      Serial.print(luchtVochtigheid);
-      Serial.print(temperatuur);
       grondVochtigheidsSensor1.getMoisture(); // Gathers raw data of soil moisture sensor.
 
       lichtSensor1.pullData(); // Gathers raw data of LDR1.
@@ -155,8 +150,8 @@ void loop()
       lichtSensor3.processData(); // Computes raw data to processed data from LDR3.
 
       //* Print out all the raw data gathered.
-      //dht.printTemperatuur(); // Prints raw data from DHT11.
-      //dht.printLuchtVochtigheid(); // Prints raw data from DHT11.
+      dht.printTemperatuur(); // Prints raw data from DHT11.
+      dht.printLuchtVochtigheid(); // Prints raw data from DHT11.
 
       ultrasonicSensor1.printRawData(); // Prints raw data from ultrasonic sensor.
 
@@ -183,10 +178,6 @@ void loop()
       String strLichtSterkte3 = lichtSensor3.dataToString(); // Converts processed data from LDR3 to datatype String.
       String strTemperatuur = dht.dataToString(temperatuur); // Converts processed data from DHT11 to datatype String.
       String strLuchtVochtigheid = dht.dataToString(luchtVochtigheid); // Converts processed data from DHT11 to datatype String.
-      
-      int contrast = 75; // Sets contrast for LCD screen.
-      LCD.setCursor(0, 0); // Sets cursor on LCD screen to home.
-      LCD.print("Temperatuur: " + String(temperatuur)); // Prints the temperature on the LCD screen.
 
       //* HTTP Post Request
       HTTPClient http; // Initializes object.
@@ -216,5 +207,11 @@ void loop()
       Serial.println("WiFi Disconnected"); // Prints message if WiFi gets disconnected.
     }   
     lastTime = millis(); // Make sure if statement for all code above stays valid.
+
+    while(WiFi.status() != WL_CONNECTED) // While WiFi is not connected, print out a . to indicate the microcontroller is trying to connect to the WiFi
+  {
+    delay(500);
+    Serial.print(".");
+  }
   }
 }

@@ -1,7 +1,7 @@
-class lichtSterkte
+class LichtSterkte
 {
   public:
-  lichtSterkte(int pin, String sensorNaam);
+  LichtSterkte(int pin, String sensorNaam);
   int pullData();
   int processData();
   void printRawData();

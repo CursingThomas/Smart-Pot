@@ -1,8 +1,8 @@
 #include <Arduino.h>
-class grondVochtigheid
+class GrondVochtigheid
 {
     public:
-    grondVochtigheid(int pin);
+    GrondVochtigheid(int pin);
     void begin();
     int getMoisture();
     int processMoistureToPercent();

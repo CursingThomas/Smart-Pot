@@ -1,7 +1,7 @@
-class waterPump
+class WaterPump
 {
     public:
-    waterPump(int pin);
+    WaterPump(int pin);
     void giveWater(int timer);
 
     private:

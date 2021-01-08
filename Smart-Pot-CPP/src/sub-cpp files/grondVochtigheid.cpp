@@ -1,46 +1,46 @@
 #include <Arduino.h>
 #include "grondVochtigheid.h"
 
-grondVochtigheid::grondVochtigheid(int pin)
+GrondVochtigheid::GrondVochtigheid(int pin)
 {
     this->pin = pin;
     pinMode(pin, INPUT);
 }
 
-int grondVochtigheid::getMoisture()
+int GrondVochtigheid::getMoisture()
 {
     rawData = analogRead(pin);
     
     return rawData;
 }
 
-int grondVochtigheid::processMoistureToPercent()
+int GrondVochtigheid::processMoistureToPercent()
 {
     processedData = ((rawData * 100) / 4095);
 
     return processedData;
 }
 
-void grondVochtigheid::printRawData()
+void GrondVochtigheid::printRawData()
 {
     Serial.print("Raw data grondvochtigheid: ");
     Serial.println(rawData);
 }
 
-void grondVochtigheid::printProcessedData()
+void GrondVochtigheid::printProcessedData()
 {
     Serial.print("Processed data grondvochtigheid: ");
     Serial.println(processedData);
 }
 
-String grondVochtigheid::dataToString()
+String GrondVochtigheid::dataToString()
 {
     strProcessedData = strProcessedData + processedData;
 
     return strProcessedData;
 }
 
-String grondVochtigheid::clearString()
+String GrondVochtigheid::clearString()
 {
     strProcessedData = "";
 

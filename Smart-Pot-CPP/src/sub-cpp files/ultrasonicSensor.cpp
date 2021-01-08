@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include "ultrasonicSensor.h"
 
-ultrasonicSensor::ultrasonicSensor(int trigPin, int echoPin)
+UltrasonicSensor::UltrasonicSensor(int trigPin, int echoPin)
 {
   this->trigPin = trigPin;
   this->echoPin = echoPin;
@@ -9,7 +9,7 @@ ultrasonicSensor::ultrasonicSensor(int trigPin, int echoPin)
   pinMode(echoPin, INPUT);
 }
 
-int ultrasonicSensor::getRawData()
+int UltrasonicSensor::getRawData()
 {
   digitalWrite(trigPin, LOW);
   delayMicroseconds(2);
@@ -22,33 +22,33 @@ int ultrasonicSensor::getRawData()
   return distance;
 }
 
-int ultrasonicSensor::processData()
+int UltrasonicSensor::processData()
 { 
   int processedData = ((distance * honderdWaarde) / potDiepte) - honderdWaarde;
 
   return processedData;
 }
 
-void ultrasonicSensor::printRawData()
+void UltrasonicSensor::printRawData()
 {
   Serial.print("Raw data ultrasonic: ");
   Serial.println(rawData);
 }
 
-void ultrasonicSensor::printProcessedData()
+void UltrasonicSensor::printProcessedData()
 {
   Serial.print("Processed data ultrasonic: ");
   Serial.println(processedData);
 }
 
-String ultrasonicSensor::dataToString()
+String UltrasonicSensor::dataToString()
 {
   strProcessedData = strProcessedData + processedData;
 
   return strProcessedData;
 }
 
-String ultrasonicSensor::clearString()
+String UltrasonicSensor::clearString()
 {
   strProcessedData = "";
 

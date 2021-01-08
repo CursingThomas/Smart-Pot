@@ -1,27 +1,27 @@
 #include <Arduino.h>
 #include "lichtSterkte.h"
 
-lichtSterkte::lichtSterkte(int pin, String sensorNaam)
+LichtSterkte::LichtSterkte(int pin, String sensorNaam)
 {
   this->pin = pin;
   this-> sensorNaam = sensorNaam;
   pinMode(pin,INPUT);
 }
 
-int lichtSterkte::pullData()
+int LichtSterkte::pullData()
 {
   rawData = analogRead(pin); 
   return rawData;
 }
 
-int lichtSterkte::processData()
+int LichtSterkte::processData()
 {
   processedData = (rawData * 100) / 4095;
 
   return processedData;
 }
 
-void lichtSterkte::printRawData()
+void LichtSterkte::printRawData()
 {
   Serial.print("Raw data lichtsensor ");
   Serial.print(sensorNaam);
@@ -29,7 +29,7 @@ void lichtSterkte::printRawData()
   Serial.println(rawData);
 }
 
-void lichtSterkte::printProcessedData()
+void LichtSterkte::printProcessedData()
 {
   Serial.print("Processed data lichtsensor ");
   Serial.print(sensorNaam);
@@ -37,14 +37,14 @@ void lichtSterkte::printProcessedData()
   Serial.println(processedData);
 }
 
-String lichtSterkte::dataToString()
+String LichtSterkte::dataToString()
 {
   strProcessedData = strProcessedData + processedData;
 
   return strProcessedData;
 }
 
-String lichtSterkte::clearString()
+String LichtSterkte::clearString()
 {
   strProcessedData = "";
 

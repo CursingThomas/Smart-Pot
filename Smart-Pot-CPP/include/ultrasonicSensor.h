@@ -1,8 +1,8 @@
 #include <Arduino.h>
-class ultrasonicSensor
+class UltrasonicSensor
 {
     public:
-    ultrasonicSensor(int trigPin, int echoPin);
+    UltrasonicSensor(int trigPin, int echoPin);
     void begin();
     int getRawData();
     int processData();

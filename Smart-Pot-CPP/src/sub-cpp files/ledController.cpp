@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include "ledController.h"
 
-ledController::ledController(int pinG, int pinR)
+LedController::LedController(int pinG, int pinR)
 {
     this->pinG = pinG;
     this->pinR = pinR;
@@ -10,13 +10,13 @@ ledController::ledController(int pinG, int pinR)
     pinMode(pinR, OUTPUT);
 }
 
-void ledController::setLedStatusVol()
+void LedController::setLedStatusVol()
 {
     digitalWrite(pinG, HIGH);
     digitalWrite(pinR, LOW);
 }
 
-void ledController::setLedStatusLeeg()
+void LedController::setLedStatusLeeg()
 {
     digitalWrite(pinG, LOW);
     digitalWrite(pinR, HIGH);
