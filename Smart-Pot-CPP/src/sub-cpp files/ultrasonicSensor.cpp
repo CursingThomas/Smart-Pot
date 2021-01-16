@@ -17,7 +17,7 @@ int UltrasonicSensor::getRawData()
   delayMicroseconds(10);
   digitalWrite(trigPin, LOW);
   long duration = pulseIn(echoPin, HIGH);
-  int distance = duration * 0.034 / 2;
+  int distance = duration * distanceVermenigvuldiggetal / distanceDeler;
   
   return distance;
 }

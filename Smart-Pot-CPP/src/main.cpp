@@ -33,7 +33,7 @@ const int lichtPin1 = 32;
 const int lichtPin2 = 35;
 const int lichtPin3 = 34;
 const int dhtHelpwaarde = 6;
-const int potPin = 1000;
+const int potPin = 10;
 
 //* Initializing all objects.
 UltrasonicSensor ultrasonicSensor1(echoPin, trigPin);
@@ -43,8 +43,7 @@ LichtSterkte lichtSensor1(lichtPin1, "Lichtsensor 1");
 LichtSterkte lichtSensor2(lichtPin2, "Lichtsensor 2");
 LichtSterkte lichtSensor3(lichtPin3, "Lichtsensor 3");
 MyDHT dht(DHTPIN, DHTTYPE, dhtHelpwaarde);
-PotentioMeter potMeter1(potPin); // zoek nog een pin!
-StaticJsonDocument<200> doc;
+PotentioMeter potMeter1(potPin); 
 
 //* Declaring usable Wi-Fi networks.
 //const char* ssid = "schenktol";

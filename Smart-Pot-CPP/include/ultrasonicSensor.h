@@ -19,7 +19,9 @@ class UltrasonicSensor
     int processedData;
     String strProcessedData;
     int distance;   
-    int potDiepte = 30;
-    int honderdWaarde = 100;
+    const int potDiepte = 30;
+    const int honderdWaarde = 100;
+    const int distanceVermenigvuldiggetal = 0.034;
+    const int distanceDeler = 2;
 
 };
