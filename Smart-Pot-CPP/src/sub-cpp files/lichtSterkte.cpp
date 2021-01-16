@@ -16,7 +16,7 @@ int LichtSterkte::pullData()
 
 int LichtSterkte::processData()
 {
-  processedData = (rawData * 100) / 4095;
+  processedData = (rawData * vermenigvuldiger) / deler;
 
   return processedData;
 }

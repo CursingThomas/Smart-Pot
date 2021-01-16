@@ -16,7 +16,7 @@ int PotentioMeter::readValuePot()
 
 int PotentioMeter::getProcessedData()
 {
-    potValue = (potValue / 1024) * 100;
+    potValue = (potValue / deler) * vermenigvuldiger;
 
     return potValue;
 }

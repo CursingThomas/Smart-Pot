@@ -24,17 +24,26 @@
 const int honderdWaarde = 100;
 const int maxwaardeSensor = 4095;
 const int DHTPIN = 14;
+const int echoPin = 27;
+const int trigPin = 26;
+const int grondPin = 33;
+const int redPin = 2;
+const int greenPin = 4;
+const int lichtPin1 = 32;
+const int lichtPin2 = 35;
+const int lichtPin3 = 34;
+const int dhtHelpwaarde = 6;
+const int potPin = 1000;
 
 //* Initializing all objects.
-UltrasonicSensor ultrasonicSensor1(27, 26);
-GrondVochtigheid grondVochtigheidsSensor1(33);
-LedController RGBLed1(2,4);
-LichtSterkte lichtSensor1(32, "Lichtsensor 1");
-LichtSterkte lichtSensor2(35, "Lichtsensor 2");
-LichtSterkte lichtSensor3(34, "Lichtsensor 3");
-MyDHT dht(DHTPIN, DHTTYPE, 6);
-LiquidCrystal LCD(12, 11, 5, 4, 3, 2);
-PotentioMeter potMeter1(1000); // zoek nog een pin!
+UltrasonicSensor ultrasonicSensor1(echoPin, trigPin);
+GrondVochtigheid grondVochtigheidsSensor1(grondPin);
+LedController RGBLed1(redPin,greenPin);
+LichtSterkte lichtSensor1(lichtPin1, "Lichtsensor 1");
+LichtSterkte lichtSensor2(lichtPin2, "Lichtsensor 2");
+LichtSterkte lichtSensor3(lichtPin3, "Lichtsensor 3");
+MyDHT dht(DHTPIN, DHTTYPE, dhtHelpwaarde);
+PotentioMeter potMeter1(potPin); // zoek nog een pin!
 StaticJsonDocument<200> doc;
 
 //* Declaring usable Wi-Fi networks.
@@ -50,34 +59,20 @@ const char* password = "WT3030wt";
 //* Declaring the endpoint of the HTTP Post Request.
 const char* serverName = "https://smartpot.nealgeilen.nl/api/pot/addData";
 
-//* Function made to control a servo (functioning as a pump) which has dependencies with the grondVochtigheid class.
-void giveWaterServo()
-{
-  int servoPin = 15;
-  int moisture = grondVochtigheidsSensor1.getMoisture();
-
-  if (moisture < 50)
-  {
-    Servo myservo;
-    myservo.attach(servoPin);
-    myservo.write(180);
-    delay(1000);
-    myservo.write(90);
-  }
-}
-
 //* Function made to control a pump which has dependencies with the grondVochtigheid class.
 void giveWaterPomp()
 {
-  const int potpin = 10;
+  const int pompPin = 5;
+  const int timerWaarde = 10;
+
   int moisture = grondVochtigheidsSensor1.getMoisture();
   moisture = grondVochtigheidsSensor1.processMoistureToPercent();
   int grenswaarde = potMeter1.readValuePot();
   grenswaarde = potMeter1.getProcessedData();
   if (moisture < grenswaarde)
   {
-    WaterPump waterPump1(5);
-    waterPump1.giveWater(10);
+    WaterPump waterPump1(pompPin);
+    waterPump1.giveWater(timerWaarde);
   }  
 }
 
@@ -85,13 +80,15 @@ void giveWaterPomp()
 void setLedStatus()
 {
   int distance = ultrasonicSensor1.getRawData();
+  const int volReservoir = 25;
+  const int leegReservoir = 5;
   
-  if (distance > 25)
+  if (distance > volReservoir)
   {
     RGBLed1.setLedStatusVol();
   }
 
-  if (distance < 5)
+  if (distance < leegReservoir)
   {
     RGBLed1.setLedStatusLeeg();
   }
@@ -102,12 +99,10 @@ void setup()
 {
   Serial.begin(9600); // Set baudrate to 9600.
   dht.begin();
-  LCD.begin(16,1); // Call to class function . begin with parameters to determine the size of the LCD screen.
   WiFi.begin(ssid, password); // Call to class function .begin with parameters ssid and password.
   Serial.println("Connecting"); // When the above line of code is executed, print that the MC is connecting to WiFi.
   while(WiFi.status() != WL_CONNECTED) // While WiFi is not connected, print out a . to indicate the microcontroller is trying to connect to the WiFi
   {
-    delay(500);
     Serial.print(".");
   }
   Serial.println(""); // Print a clear line in the console
@@ -122,7 +117,7 @@ void loop()
   unsigned long lastTime = 0; // Sets variable used to calculate if timing has been met.
   unsigned long timerDelay = timerDelaywaarde; // Check two variables.
   setLedStatus(); // Executes this function.
-  giveWaterServo(); // Executes this function.
+  giveWaterPomp(); // Executes this function.
 
   if ((millis() - lastTime) > timerDelay) // Sets if statement to check if requirements are met.
   {
@@ -181,7 +176,7 @@ void loop()
 
       //* HTTP Post Request
       HTTPClient http; // Initializes object.
-      http.begin(serverName); // Calls to function .begin with parameter serverName.
+      http.begin(serverName); // Calls to function. begin with parameter serverName.
       http.addHeader("Content-Type", "application/json"); // Adds a header to the HTTP Post Request.
       http.addHeader("X-AUTH-TOKEN", "TEST"); // Adds a header to the HTTP Post Request.
       http.addHeader("X-AUTH-ID", "wajdhlawkjhdlawjkdhawkjdh"); // Adds a header to the HTTP Post Request.  
@@ -210,7 +205,6 @@ void loop()
 
     while(WiFi.status() != WL_CONNECTED) // While WiFi is not connected, print out a . to indicate the microcontroller is trying to connect to the WiFi
   {
-    delay(500);
     Serial.print(".");
   }
   }

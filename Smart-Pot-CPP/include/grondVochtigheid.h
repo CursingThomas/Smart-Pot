@@ -17,4 +17,6 @@ class GrondVochtigheid
     int pin;
     int processedData;
     String strProcessedData;
+    const int vermenigvuldiger = 100;
+    const int deler = 4095;
 };

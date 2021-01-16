@@ -16,5 +16,7 @@ class LichtSterkte
   String strProcessedData;
   String sensorNaam;
   int rawData;
+  const int vermenigvuldiger = 100;
+  const int deler = 4095;
 };
 
