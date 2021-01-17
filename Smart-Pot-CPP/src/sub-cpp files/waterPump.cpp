@@ -11,4 +11,5 @@ void WaterPump::giveWater(int timer)
 {
     digitalWrite(pin, HIGH);
     delay(timer);
+    digitalWrite(pin, LOW);
 }

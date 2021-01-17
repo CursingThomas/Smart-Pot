@@ -93,6 +93,59 @@ void setLedStatus()
   }
 }
 
+void getDatafromsensors()
+{
+  //* Gathers raw data of all sensors.
+  ultrasonicSensor1.getRawData(); // Gathers raw data of ultrasonic sensor.
+      
+
+
+  grondVochtigheidsSensor1.getMoisture(); // Gathers raw data of soil moisture sensor.
+
+  lichtSensor1.pullData(); // Gathers raw data of LDR1.
+  lichtSensor2.pullData(); // Gathers raw data of LDR2.
+  lichtSensor2.pullData(); // Gathers raw data of LDR3.
+}
+
+void processDatafromsensors()
+{
+  //* Compute raw data gathered before to processed data which is representative.
+  ultrasonicSensor1.processData(); // Computes raw data to processed data from ultrasonic sensor.
+
+  grondVochtigheidsSensor1.processMoistureToPercent(); // Computes raw data to processed data from soil moisture sensor.
+
+  lichtSensor1.processData(); // Computes raw data to processed data from LDR1.
+  lichtSensor2.processData(); // Computes raw data to processed data from LDR2.
+  lichtSensor3.processData(); // Computes raw data to processed data from LDR3.
+}
+
+void printDatafromsensors()
+{
+  //* Print out all the raw data gathered.
+  dht.printTemperatuur(); // Prints raw data from DHT11.
+  dht.printLuchtVochtigheid(); // Prints raw data from DHT11.
+
+  ultrasonicSensor1.printRawData(); // Prints raw data from ultrasonic sensor.
+
+  grondVochtigheidsSensor1.printRawData(); // Prints raw data from soil moisture sensor.
+
+  lichtSensor1.printRawData(); // Prints raw data from LDR1.
+  lichtSensor2.printRawData(); // Prints raw data from LDR2.
+  lichtSensor3.printRawData(); // Prints raw data from LDR3.
+}
+
+void printProcesseddatafromsensors()
+{
+  //* Print all final computed data which will be posted to the website.
+  ultrasonicSensor1.printProcessedData(); // Prints processed data from ultrasonic sensor.
+
+  grondVochtigheidsSensor1.printProcessedData(); // Prints processed data from soil moisture sensor.
+
+  lichtSensor1.printProcessedData(); // Prints processed data from LDR1.
+  lichtSensor2.printProcessedData(); // Prints processed data from LDR2.
+  lichtSensor3.printProcessedData(); // Prints processed data from LDR3.
+}
+
 //* Normal void setup()
 void setup() 
 {
@@ -123,47 +176,13 @@ void loop()
    
     if(WiFi.status()== WL_CONNECTED) // Sets if statement to check if requirements are met.
     {
-      //* Gathers raw data of all sensors.
-      ultrasonicSensor1.getRawData(); // Gathers raw data of ultrasonic sensor.
-      
       double luchtVochtigheid = dht.readHumidity(); // Gathers raw data of DHT11 sensor.
       double temperatuur = dht.readTemperature(); // Gathers raw data of DHT11 sensor.
-      grondVochtigheidsSensor1.getMoisture(); // Gathers raw data of soil moisture sensor.
-
-      lichtSensor1.pullData(); // Gathers raw data of LDR1.
-      lichtSensor2.pullData(); // Gathers raw data of LDR2.
-      lichtSensor2.pullData(); // Gathers raw data of LDR3.
-    
-      //* Compute raw data gathered before to processed data which is representative.
-      ultrasonicSensor1.processData(); // Computes raw data to processed data from ultrasonic sensor.
-
-      grondVochtigheidsSensor1.processMoistureToPercent(); // Computes raw data to processed data from soil moisture sensor.
-
-      lichtSensor1.processData(); // Computes raw data to processed data from LDR1.
-      lichtSensor2.processData(); // Computes raw data to processed data from LDR2.
-      lichtSensor3.processData(); // Computes raw data to processed data from LDR3.
-
-      //* Print out all the raw data gathered.
-      dht.printTemperatuur(); // Prints raw data from DHT11.
-      dht.printLuchtVochtigheid(); // Prints raw data from DHT11.
-
-      ultrasonicSensor1.printRawData(); // Prints raw data from ultrasonic sensor.
-
-      grondVochtigheidsSensor1.printRawData(); // Prints raw data from soil moisture sensor.
-
-      lichtSensor1.printRawData(); // Prints raw data from LDR1.
-      lichtSensor2.printRawData(); // Prints raw data from LDR2.
-      lichtSensor3.printRawData(); // Prints raw data from LDR3.
-
-      //* Print all final computed data which will be posted to the website.
-      ultrasonicSensor1.printProcessedData(); // Prints processed data from ultrasonic sensor.
-
-      grondVochtigheidsSensor1.printProcessedData(); // Prints processed data from soil moisture sensor.
-
-      lichtSensor1.printProcessedData(); // Prints processed data from LDR1.
-      lichtSensor2.printProcessedData(); // Prints processed data from LDR2.
-      lichtSensor3.printProcessedData(); // Prints processed data from LDR3.
-      
+      getDatafromsensors();
+      processDatafromsensors();
+      printDatafromsensors();
+      printProcesseddatafromsensors();   
+     
       //* Converts processed data to a datatype of String.
       String distance1 = ultrasonicSensor1.dataToString(); // Converts processed data from ultrasonic sensor to datatype String.
       String strGrondVochtigheid1 = grondVochtigheidsSensor1.dataToString(); // Converts processed data from soil moisture sensor to datatype String.
