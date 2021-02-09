@@ -47,10 +47,10 @@ PotentioMeter potMeter1(potPin);
 
 //* Declaring usable Wi-Fi networks.
 //const char* ssid = "schenktol";
-//const char* password = "TLE143TLE";
+//const char* password = "";
 
 const char* ssid = "wjavandertol";
-const char* password = "WT3030wt";
+const char* password = "";
 
 //const char* ssid = "12connect";
 //const char* password = "";
